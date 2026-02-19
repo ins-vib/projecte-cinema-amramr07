@@ -1,8 +1,8 @@
 INSERT INTO CINEMA (ADRESS, CITY, NAME, POSTAL_CODE) VALUES
-('Major,15', 'Tarragona', '' , 43100);
+('Major,15', 'Tarragona', 'Oscars' , 43100);
 
 INSERT INTO CINEMA (ADRESS, CITY, NAME, POSTAL_CODE) VALUES
-('Major,30', 'Tarragona', '' , 43100);
+('Major,30', 'Tarragona', 'JCS' , 43100);
 
 INSERT INTO CINEMA (ADRESS, CITY, NAME, POSTAL_CODE) VALUES
-('Major,40', 'Tarragona', '' , 43100);
+('Major,40', 'Tarragona', 'Yelmus' , 43100);
