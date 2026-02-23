@@ -1,10 +1,14 @@
 package com.daw.CinemaDaw.domain.cinema;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 
 @Entity
@@ -23,8 +27,19 @@ public class Cinema {
     private String city;
     @Column
     private String postalCode;
+
+    @OneToMany(mappedBy="cinema")
+    List<Room> rooms = new ArrayList<>();
+
+
     public String getName() {
         return name;
+    }
+    public List<Room> getRooms() {
+        return rooms;
+    }
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
     }
     public void setName(String name) {
         this.name = name;

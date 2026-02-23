@@ -51,12 +51,32 @@ public class Room {
         this.name = name;
     }
 
+    public Cinema getCinema() {
+        return cinema;
+    }
+
+    public void setCinema(Cinema cinema) {
+        this.cinema = cinema;
+    }
+
     public int getCapacity() {
         return capacity;
     }
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Room{");
+        sb.append("id=").append(id);
+        sb.append(", name=").append(name);
+        sb.append(", capacity=").append(capacity);
+        sb.append(", cinema=").append(cinema);
+        sb.append('}');
+        return sb.toString();
     }
 
 
