@@ -13,5 +13,6 @@ import com.daw.CinemaDaw.domain.cinema.Cinema;
 @Repository
 public interface CinemaRepository extends JpaRepository<Cinema, Long> {
     List<Cinema> findByCity(String city);
+
     
 }
