@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detall Cinema</title>
+</head>
+<body>
+
+<h1 th:text="${cinema.name}"></h1>
+<p>Ciutat: <span th:text="${cinema.city}"></span></p>
+<p>Adreça: <span th:text="${cinema.adress}"></span></p>
+
+<h2>Sales</h2>
+<ul>
+    <li th:each="room : ${cinema.rooms}">
+        <span th:text="${room.name}"></span>
+        (Capacitat: <span th:text="${room.capacity}"></span>)
+    </li>
+</ul>
+
+<a href="/cinemes">Tornar</a>
+
+</body>
+</html>

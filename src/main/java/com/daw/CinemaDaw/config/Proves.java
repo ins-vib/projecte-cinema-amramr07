@@ -55,7 +55,7 @@ public class Proves implements CommandLineRunner{
     room3.setCinema(cinema1); 
     roomRepository.save(room3);
 
-    Cinema cinema3D = new Cinema("Oscars", "Major,15", "Tarragona", "43100");
+    Cinema cinema3D = new Cinema("Cinema3D", "Major,15", "Tarragona", "43100");
     Room room3D1 = new Room("Sala 3D 1", 500);
     room3D1.setCinema(cinema3D);
     cinema3D.getRooms().add(room3D1);
