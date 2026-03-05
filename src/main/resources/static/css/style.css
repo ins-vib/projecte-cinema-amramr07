@@ -1,0 +1,287 @@
+/* =========================================
+   Importación de Fuentes (Montserrat)
+   ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
+
+/* =========================================
+   Variables de Color (Dark Theme)
+   ========================================= */
+:root {
+    --bg-dark: #0f1115;       /* Fondo principal */
+    --bg-card: #1c1f26;       /* Fondo de tablas y formularios */
+    --text-main: #e0e0e0;     /* Texto general */
+    --text-muted: #a0aab2;    /* Texto secundario */
+    --accent: #E50914;        /* Rojo cine */
+    --accent-hover: #b80710;  /* Rojo cine oscuro (hover) */
+    --border-color: #2b303b;  /* Bordes sutiles */
+}
+
+/* =========================================
+   Estilos Generales
+   ========================================= */
+body {
+    font-family: 'Montserrat', Arial, sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1, h2, h3 {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--accent-hover);
+}
+
+/* =========================================
+   Navegación y Cabecera (Home)
+   ========================================= */
+header {
+    width: 100%;
+    background-color: #000000;
+    padding: 20px 0;
+    text-align: center;
+    border-bottom: 2px solid var(--accent);
+}
+
+header h1 {
+    margin: 0 0 15px 0;
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+nav a {
+    color: var(--text-main);
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 5px 10px;
+}
+
+nav a:hover {
+    color: var(--accent);
+}
+
+/* =========================================
+   Animación Cinematográfica (Home)
+   ========================================= */
+section {
+    text-align: center;
+    margin-top: 80px;
+    padding: 40px;
+}
+
+/* Aquí está la magia del texto inicial */
+section h2 {
+    font-size: 3rem;
+    text-transform: uppercase;
+    animation: cinematicReveal 3s ease-out forwards;
+    opacity: 0; /* Empieza invisible */
+}
+
+section p {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    animation: fadeIn 4s ease-in forwards;
+}
+
+@keyframes cinematicReveal {
+    0% {
+        opacity: 0;
+        letter-spacing: -10px;
+        transform: scale(0.9);
+        text-shadow: 0 0 0 rgba(229, 9, 20, 0);
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+        letter-spacing: 4px;
+        transform: scale(1);
+        text-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+    }
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* =========================================
+   Tablas (Listas de Cinemes y Películas)
+   ========================================= */
+table {
+    width: 90%;
+    max-width: 1000px;
+    border-collapse: collapse;
+    margin: 30px 0;
+    background-color: var(--bg-card);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th {
+    background-color: #121418;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+tr:hover {
+    background-color: #242830;
+}
+
+td a {
+    background-color: var(--border-color);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: var(--text-main);
+}
+
+td a:hover {
+    background-color: var(--accent);
+    color: white;
+}
+
+/* =========================================
+   Formularios (Crear/Editar)
+   ========================================= */
+form {
+    background-color: var(--bg-card);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 500px;
+    margin: 20px 0;
+}
+
+form div {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--bg-dark);
+    color: white;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 8px rgba(229, 9, 20, 0.3);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* =========================================
+   Botones Generales
+   ========================================= */
+button[type="submit"] {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    margin-top: 10px;
+}
+
+button[type="submit"]:hover {
+    background-color: var(--accent-hover);
+}
+
+/* Botón de volver / Crear nuevo */
+body > a {
+    display: inline-block;
+    margin: 20px 0;
+    padding: 10px 20px;
+    background-color: var(--border-color);
+    color: white;
+    border-radius: 4px;
+}
+
+body > a:hover {
+    background-color: var(--text-muted);
+    color: #000;
+}
+
+/* =========================================
+   Listas y Detalles (Detall Cinema)
+   ========================================= */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    background: var(--bg-card);
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 4px;
+    border-left: 4px solid var(--accent);
+}
+
+/* =========================================
+   Footer
+   ========================================= */
+footer {
+    margin-top: auto;
+    padding: 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    width: 100%;
+    border-top: 1px solid var(--border-color);
+}

@@ -19,7 +19,7 @@ import jakarta.transaction.Transactional;
 
 @Component
 public class Proves implements CommandLineRunner{
-    private CinemaRepository cinemaRepository;
+    private final CinemaRepository cinemaRepository;
     private RoomRepository roomRepository;
     private SeatRepository seatRepository;
  
