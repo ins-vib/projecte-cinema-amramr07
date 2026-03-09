@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Crear Pel·lícula</title>
+<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<h1>Editar Pel·lícula</h1>
+
+<form th:action="@{/movies/edit}" th:object="${movie}" method="post">
+
+<input type="hidden" th:field="*{id}">
+
+<label>Títol</label>
+<input type="text" th:field="*{title}"><br><br>
+
+<label>Durada (min)</label>
+<input type="number" th:field="*{duration}"><br><br>
+
+<label>Gènere</label>
+<input type="text" th:field="*{genre}"><br><br>
+
+<label>Descripció</label>
+<textarea th:field="*{sinopsis}"></textarea><br><br>
+
+<label>Data Estrena</label>
+<input type="date" th:field="*{releaseDate}"><br><br>
+
+<button type="submit">Guardar</button>
+
+</form>
+
+<a href="/movies">Tornar</a>
+
+</body>
+</html>

@@ -69,18 +69,18 @@ public class CinemaController {
     public String guardarCinema(@ModelAttribute Cinema cinema) {
         cinemaRepository.save(cinema);
         
-        return "redirect:cinemes/cinemes";
+        return "redirect:/cinemes";
     }
     //Formulari ediatr cinema
     @GetMapping("/cinema/edit/{id}")
-    public String mostrarFormulariEditarÇ(@PathVariable Long id, Model model){
+    public String mostrarFormulariEditar(@PathVariable Long id, Model model){
         Optional<Cinema> optional = cinemaRepository.findById(id);
         if(optional.isPresent()){
             Cinema cinema = optional.get();
             model.addAttribute("cinema", cinema);
             return "cinemes/edit-cinema";
         }
-        return "redirect:cinemes/cinemes";
+        return "redirect:/cinemes";
         
     }
 
@@ -89,7 +89,7 @@ public class CinemaController {
     public String editCinema(@ModelAttribute Cinema cinema) {
         cinemaRepository.save(cinema);
         
-        return "redirect:cinemes/cinemes";
+        return "redirect:/cinemes";
     }
 }
     
