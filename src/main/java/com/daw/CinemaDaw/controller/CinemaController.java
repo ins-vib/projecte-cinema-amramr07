@@ -51,7 +51,7 @@ public class CinemaController {
     public String delete(@PathVariable Long id, Model model) {
         Optional<Cinema> optional = cinemaRepository.findById(id);
         optional.ifPresent(cinemaRepository::delete);
-        return "redirect:cinemes/cinemes";
+        return "redirect:/cinemes";
     }
 
    //Formulari crear cinema

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Sala</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<h1>Editar Sala</h1>
+
+<form th:action="@{/room/edit}" th:object="${room}" method="post">
+    <input type="hidden" th:field="*{id}">
+
+    <div>
+        <label>Nom:</label>
+        <input type="text" th:field="*{name}" /><br><br>
+    </div>
+    <div>
+        <label>Capacitat:</label>
+        <input type="number" th:field="*{capacity}" /><br><br>
+    </div>
+
+    <button type="submit">Guardar</button>
+    <a th:href="@{/cinema/{id}(id=${room.cinema.id})}">Tornar enrere</a>
+</form>
+
+</body>
+</html>

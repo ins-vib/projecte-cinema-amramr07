@@ -1,0 +1,100 @@
+package com.daw.CinemaDaw.controller;
+
+import java.util.Optional;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.daw.CinemaDaw.domain.cinema.Cinema;
+import com.daw.CinemaDaw.domain.cinema.Room;
+import com.daw.CinemaDaw.repository.CinemaRepository;
+import com.daw.CinemaDaw.repository.RoomRepository;
+
+@Controller
+public class RoomController {
+
+    private final RoomRepository roomRepository;
+    private final CinemaRepository cinemaRepository;
+
+    public RoomController(RoomRepository roomRepository, CinemaRepository cinemaRepository) {
+        this.roomRepository = roomRepository;
+        this.cinemaRepository = cinemaRepository;
+    }
+
+    // Veure detall sala
+    @GetMapping("/room/{id}")
+    public String detall(@PathVariable Long id, Model model) {
+        Optional<Room> optional = roomRepository.findById(id);
+        if (optional.isPresent()) {
+            model.addAttribute("room", optional.get());
+            return "rooms/room-details";
+        }
+        return "redirect:/cinemes";
+    }
+
+    // Mostrar formulari crear sala
+    @GetMapping("/room/create")
+    public String mostrarFormulariCrear(@RequestParam Long cinemaId, Model model) {
+        Optional<Cinema> optional = cinemaRepository.findById(cinemaId);
+        if (optional.isPresent()) {
+            model.addAttribute("room", new Room());
+            model.addAttribute("cinema", optional.get());
+            return "rooms/create-room";
+        }
+        return "redirect:/cinemes";
+    }
+
+    // Crear sala
+    @PostMapping("/room/create")
+    public String crearRoom(@ModelAttribute Room room, @RequestParam Long cinemaId) {
+        Optional<Cinema> optional = cinemaRepository.findById(cinemaId);
+        if (optional.isPresent()) {
+            room.setCinema(optional.get());
+            roomRepository.save(room);
+            return "redirect:/cinema/" + cinemaId;
+        }
+        return "redirect:/cinemes";
+    }
+
+    // Mostrar formulari editar sala
+    @GetMapping("/room/edit/{id}")
+    public String mostrarFormulariEditar(@PathVariable Long id, Model model) {
+        Optional<Room> optional = roomRepository.findById(id);
+        if (optional.isPresent()) {
+            model.addAttribute("room", optional.get());
+            return "rooms/edit-room";
+        }
+        return "redirect:/cinemes";
+    }
+
+    // Editar sala
+    @PostMapping("/room/edit")
+    public String editRoom(@ModelAttribute Room room) {
+        Optional<Room> optional = roomRepository.findById(room.getId());
+        if (optional.isPresent()) {
+            Room existing = optional.get();
+            existing.setName(room.getName());
+            existing.setCapacity(room.getCapacity());
+            roomRepository.save(existing);
+            return "redirect:/cinema/" + existing.getCinema().getId();
+        }
+        return "redirect:/cinemes";
+    }
+
+    // Esborrar sala
+    @GetMapping("/room/delete/{id}")
+    public String deleteRoom(@PathVariable Long id) {
+        Optional<Room> optional = roomRepository.findById(id);
+        if (optional.isPresent()) {
+            Long cinemaId = optional.get().getCinema().getId();
+            roomRepository.delete(optional.get());
+            return "redirect:/cinema/" + cinemaId;
+        }
+        return "redirect:/cinemes";
+    }
+}

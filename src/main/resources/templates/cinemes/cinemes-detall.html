@@ -16,9 +16,18 @@
     <li th:each="room : ${cinema.rooms}">
         <span th:text="${room.name}"></span>
         (Capacitat: <span th:text="${room.capacity}"></span>)
+        &nbsp;
+        <a th:href="@{/room/{id}(id=${room.id})}">Veure detall</a>
+        &nbsp;
+        <a th:href="@{/room/edit/{id}(id=${room.id})}">Editar</a>
+        &nbsp;
+        <a th:href="@{/room/delete/{id}(id=${room.id})}">Esborrar</a>
     </li>
 </ul>
 
+<a th:href="@{/room/create(cinemaId=${cinema.id})}"> Nova Sala</a>
+
+<br><br>
 <a href="/cinemes">Tornar</a>
 
 </body>
