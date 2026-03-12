@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.daw.CinemaDaw.domain.cinema.Cinema;
 import com.daw.CinemaDaw.repository.CinemaRepository;
+
+import jakarta.validation.Valid;
 
 @Controller
 public class CinemaController {
@@ -48,7 +51,7 @@ public class CinemaController {
 
     // Borrar cine
     @GetMapping("/cinema/delete/{id}")
-    public String delete(@PathVariable Long id, Model model) {
+    public String delete(@Valid @PathVariable Long id, Model model) {
         Optional<Cinema> optional = cinemaRepository.findById(id);
         optional.ifPresent(cinemaRepository::delete);
         return "redirect:/cinemes";
@@ -66,11 +69,17 @@ public class CinemaController {
 
     //Crear cinema
     @PostMapping("/cinema/create")
-    public String guardarCinema(@ModelAttribute Cinema cinema) {
-        cinemaRepository.save(cinema);
+    public String guardarCinema(@Valid @ModelAttribute Cinema cinema , BindingResult result ) {
+       
+            if(result.hasErrors()){
+                return "cinemes/create-cinema";}
         
+        cinemaRepository.save(cinema);
         return "redirect:/cinemes";
     }
+
+    
+        
     //Formulari ediatr cinema
     @GetMapping("/cinema/edit/{id}")
     public String mostrarFormulariEditar(@PathVariable Long id, Model model){
@@ -86,11 +95,12 @@ public class CinemaController {
 
      //Editar cinema
      @PostMapping("/edit/cinema")
-    public String editCinema(@ModelAttribute Cinema cinema) {
-        cinemaRepository.save(cinema);
+    public String editCinema(@Valid @ModelAttribute Cinema cinema, BindingResult result) {
+        if(result.hasErrors()){
+                return "cinemes/edit-cinema";}
         
+        cinemaRepository.save(cinema);
         return "redirect:/cinemes";
     }
 }
-    
 

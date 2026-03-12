@@ -10,22 +10,26 @@
     <h1>Afegir Nou Cinema</h1>
 
     <form th:action="@{/cinema/create}" th:object="${cinema}" method="post">
-        <div>
+       
             <label>Nom:</label>
             <input type="text" th:field="*{name}" /> <br><br>
-        </div>
-        <div>
+            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"> </div>
+        
+        
             <label>Adreça:</label>
             <input type="text" th:field="*{adress}" /><br><br>
-        </div>
-        <div>
+            <div th:if="${#fields.hasErrors('adress')}" th:errors="*{adress}"> </div>
+       
+       
             <label>Ciutat:</label>
             <input type="text" th:field="*{city}" /><br><br>
-        </div>
-        <div>
+            <div th:if="${#fields.hasErrors('city')}" th:errors="*{city}"> </div>
+        
+        
             <label>Codi Postal:</label>
             <input type="text" th:field="*{postalCode}" /><br><br>
-        </div>
+            <div th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}"> </div>
+       
 
         <button type="submit">Guardar</button>
         <a href="/cinemes">Tornar enrere</a>

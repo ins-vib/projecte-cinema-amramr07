@@ -28,7 +28,7 @@ public class NewsService {
             String linia = lectorFitxer.nextLine();
             String[] camps = linia.split(":");
             
-            if (camps.length >= 2) {  // evitar ArrayIndexOutOfBoundsException
+            if (camps.length >= 2) {  
                 New n = new New(camps[0], camps[1]);
                 newlist.add(n);
             }
