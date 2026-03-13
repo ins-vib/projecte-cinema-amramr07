@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Detall Sala</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+    
+
 <body>
+
+<div th:replace="~{layout :: layout(~{::content})}">
+
+<div th:fragment="content">
 
 <h1 th:text="${room.name}"></h1>
 <p>Capacitat: <span th:text="${room.capacity}"></span></p>
@@ -13,6 +14,10 @@
 
 <br>
 <a th:href="@{/cinema/{id}(id=${room.cinema.id})}">Tornar al cinema</a>
+
+</div>
+
+</div>
 
 </body>
 </html>

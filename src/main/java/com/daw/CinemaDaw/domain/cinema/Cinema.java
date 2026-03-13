@@ -31,19 +31,19 @@ public class Cinema {
     private String name;
     
     
-     @NotBlank(message="The adress name is obligatory")
+     @NotBlank(message="The address  is obligatory")
     @Size(min=2, max=100, message= "The adress has to have beetwen 2 and 100 characters")
     @Column
     private String adress;
 
 
-     @NotBlank(message="The city name is obligatory")
+     @NotBlank(message="The city  is obligatory")
     @Size(min=2, max=100, message= "The city has to have beetwen 2 and 100 characters")
     @Column
     private String city;
 
 
-     @NotBlank(message="The postal code name is obligatory")
+     @NotBlank(message="The postal code is obligatory")
     @Pattern (regexp="\\d{5}", message = "The postal code has to have 5 characters")
     @Column
     private String postalCode;

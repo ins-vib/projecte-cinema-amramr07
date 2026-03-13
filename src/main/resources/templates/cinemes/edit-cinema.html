@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Cinema</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+    
+
 <body>
 
-    <h1>Editar Cinema</h1>
+<div th:replace="~{layout :: layout(~{::content})}">
 
-   <form th:action="@{/edit/cinema}" th:object="${cinema}" method="post">
+<div th:fragment="content">
+
+<h1>Editar Cinema</h1>
+
+<form th:action="@{/edit/cinema}" th:object="${cinema}" method="post">
 
 <input type="hidden" th:field="*{id}" />
 
@@ -29,9 +30,17 @@
 <input type="text" th:field="*{postalCode}" />
 <div th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}"></div>
 
+<br>
+
 <button type="submit">Guardar</button>
-<a href="/cinemes">Tornar enrere</a>
+
+<a th:href="@{/cinemes}">Tornar enrere</a>
+
 </form>
+
+</div>
+
+</div>
 
 </body>
 </html>

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.daw.CinemaDaw.domain.cinema.Movie;
 import com.daw.CinemaDaw.repository.MovieRepository;
+
+import jakarta.validation.Valid;
 
 @Controller
 public class MovieController {
@@ -56,14 +59,21 @@ public String guardarMovie(@ModelAttribute Movie movie) {
     }
 
     // Update movie
-    @PostMapping("/movies/edit")
-    public String updateMovie(@ModelAttribute Movie movie) {
-        Optional<Movie> optionalMovie = movieRepository.findById(movie.getId());
-        if (optionalMovie.isPresent()) {
-            movieRepository.save(movie);
-        }
-        return "redirect:/movies";
+   @PostMapping("/movies/edit")
+public String updateMovie(@Valid @ModelAttribute Movie movie,
+                          BindingResult result) {
+
+    if(result.hasErrors()){
+        return "movies/edit-movie";
     }
+
+    Optional<Movie> optionalMovie = movieRepository.findById(movie.getId());
+    if (optionalMovie.isPresent()) {
+        movieRepository.save(movie);
+    }
+
+    return "redirect:/movies";
+}
 
     // View movie details
     @GetMapping("/movies/{id}")

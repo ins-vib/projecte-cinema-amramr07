@@ -1,29 +1,44 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Nova Sala</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+    
+
 <body>
+
+<div th:replace="~{layout :: layout(~{::content})}">
+
+<div th:fragment="content">
 
 <h1>Afegir Nova Sala a <span th:text="${cinema.name}"></span></h1>
 
 <form th:action="@{/room/create}" th:object="${room}" method="post">
-    <input type="hidden" name="cinemaId" th:value="${cinema.id}">
 
-    <div>
-        <label>Nom:</label>
-        <input type="text" th:field="*{name}" /><br><br>
-    </div>
-    <div>
-        <label>Capacitat:</label>
-        <input type="number" th:field="*{capacity}" /><br><br>
-    </div>
+<input type="hidden" name="cinemaId" th:value="${cinema.id}">
 
-    <button type="submit">Guardar</button>
-    <a th:href="@{/cinema/{id}(id=${cinema.id})}">Tornar enrere</a>
+<div>
+<label>Nom:</label>
+<input type="text" th:field="*{name}" />
+<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+<br>
+</div>
+
+<div>
+<label>Capacitat:</label>
+<input type="number" th:field="*{capacity}" />
+<p th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}"></p>
+<br>
+</div>
+
+<button type="submit">Guardar</button>
+
+<a th:href="@{/cinema/{id}(id=${cinema.id})}">
+Tornar enrere
+</a>
+
 </form>
+
+</div>
+
+</div>
 
 </body>
 </html>

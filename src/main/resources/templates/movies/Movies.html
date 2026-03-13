@@ -1,17 +1,18 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<title>Pel·lícules</title>
-<link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+    
 
 <body>
 
+<div th:replace="~{layout :: layout(~{::content})}">
+
+<div th:fragment="content">
+
 <h1>Llista de Pel·lícules</h1>
 
-
 <a th:href="@{/movies/create}">Crear pel·lícula</a>
+
+<br><br>
 
 <table border="1">
     <tr>
@@ -34,7 +35,13 @@
     </tr>
 </table>
 
-<a href="/">Tornar</a>
+<br>
+
+<a th:href="@{/}">Tornar</a>
+
+</div>
+
+</div>
 
 </body>
 </html>

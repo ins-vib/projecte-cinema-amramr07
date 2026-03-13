@@ -9,30 +9,41 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Movie {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
 
-    @Column
-    private String title;
+@NotBlank(message="The movie title is obligatory")
+@Size(min=2, max=100, message="The title has to have between 2 and 100 characters")
+@Column(nullable = false)
+private String title;
 
-    @Column(name="duration_minutes",nullable=false)
-    private int duration; // minuts
+@NotNull(message="The movie duration is obligatory")
+@Min(value = 1, message="The duration must be at least 1 minute")
+@Max(value = 500, message="The duration must be at most 500 minutes")
+@Column(name="duration_minutes", nullable=false)
+private Integer duration; // Cambié de int a Integer
 
-    @Column(length=50)
-    private String genre;
+@NotBlank(message="The genre is obligatory")
+@Size(min=2, max=100, message="The genre has to have between 2 and 100 characters")
+@Column(length=100, nullable=false)
+private String genre;
 
-    @Column(columnDefinition="TEXT")
-    private String sinopsis;
+@Column(columnDefinition="TEXT")
+private String sinopsis;
 
-    @Column(name = "release_date")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    private LocalDate releaseDate;
-
+@Column(name = "release_date")
+@DateTimeFormat(pattern="yyyy-MM-dd")
+private LocalDate releaseDate;
     
 
 

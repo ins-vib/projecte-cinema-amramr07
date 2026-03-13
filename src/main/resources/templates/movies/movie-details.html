@@ -1,21 +1,42 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Movie Details</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+    
+
 <body>
+
+<div th:replace="~{layout :: layout(~{::content})}">
+
+<div th:fragment="content">
 
 <h1 th:text="${movie.title}"></h1>
 
-<p><strong>Duration:</strong> <span th:text="${movie.duration}">120</span> minutes</p>
-<p><strong>Genre:</strong> <span th:text="${movie.genre}"></span></p>
-<p><strong>Description:</strong> <span th:text="${movie.description}"></span></p>
-<p><strong>Release Date:</strong> <span th:text="${movie.releaseDate}"></span></p>
+<p>
+<strong>Duration:</strong>
+<span th:text="${movie.duration}"></span> minutes
+</p>
+
+<p>
+<strong>Genre:</strong>
+<span th:text="${movie.genre}"></span>
+</p>
+
+<p>
+<strong>Description:</strong>
+<span th:text="${movie.description}"></span>
+</p>
+
+<p>
+<strong>Release Date:</strong>
+<span th:text="${movie.releaseDate}"></span>
+</p>
+
+<br>
 
 <a th:href="@{/movies}">Back to list</a>
 
+</div>
+
+</div>
 
 </body>
 </html>

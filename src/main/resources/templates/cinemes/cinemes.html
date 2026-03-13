@@ -1,66 +1,49 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>CinemaDaw</title>
-   
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+    
 
 <body>
+
+<div th:replace="~{layout :: layout(~{::content})}">
+
+<div th:fragment="content">
+
 <h1>Llista cinemes</h1>
+
+<a th:href="@{/create/cinema}">Crear nou cinema</a>
 
 <table>
     <thead>
         <tr>
-            <th>
-                Nom
-            </th>
-            <th>
-                Ciutat
-            </th>
-
-
-
+            <th>Nom</th>
+            <th>Ciutat</th>
         </tr>
-
-
-
-
     </thead>
+
     <tbody>
         <tr th:each="cinema: ${llista}">
-            <td th:text="${cinema.name}" > </td>
-            <td th:text="${cinema.city}"> Ciutat</td>
+            <td th:text="${cinema.name}"></td>
+            <td th:text="${cinema.city}"></td>
 
-            <td> 
-                <a th:href= "@{/cinema/{id}(id=${cinema.id})}"> Veure detall</a>
+            <td>
+                <a th:href="@{/cinema/{id}(id=${cinema.id})}">Veure detall</a>
             </td>
 
-            <td> 
-                <a th:href= "@{/cinema/delete/{id}(id=${cinema.id})}">Esborrar </a>
-            </td>
-            <td> 
-                <a th:href= "@{/cinema/edit/{id}(id=${cinema.id})}">Editar </a>
+            <td>
+                <a th:href="@{/cinema/delete/{id}(id=${cinema.id})}">Esborrar</a>
             </td>
 
-            
-
+            <td>
+                <a th:href="@{/cinema/edit/{id}(id=${cinema.id})}">Editar</a>
+            </td>
         </tr>
     </tbody>
 
+</table>
 
-    <h1>Llista cinemes</h1>
-<a th:href="@{/create/cinema}">Crear nou cinema</a>
-<table>
-    ...
-</table>
-</table>
+</div>
+
+</div>
 
 </body>
 </html>
-
-
-
-

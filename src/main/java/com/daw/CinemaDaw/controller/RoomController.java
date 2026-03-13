@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,8 @@ import com.daw.CinemaDaw.domain.cinema.Cinema;
 import com.daw.CinemaDaw.domain.cinema.Room;
 import com.daw.CinemaDaw.repository.CinemaRepository;
 import com.daw.CinemaDaw.repository.RoomRepository;
+
+import jakarta.validation.Valid;
 
 @Controller
 public class RoomController {
@@ -50,16 +53,26 @@ public class RoomController {
     }
 
     // Crear sala
-    @PostMapping("/room/create")
-    public String crearRoom(@ModelAttribute Room room, @RequestParam Long cinemaId) {
-        Optional<Cinema> optional = cinemaRepository.findById(cinemaId);
-        if (optional.isPresent()) {
-            room.setCinema(optional.get());
-            roomRepository.save(room);
-            return "redirect:/cinema/" + cinemaId;
-        }
-        return "redirect:/cinemes";
+   @PostMapping("/room/create")
+public String crearRoom(@Valid @ModelAttribute Room room,
+                        BindingResult result,
+                        @RequestParam Long cinemaId,
+                        Model model) {
+
+    if (result.hasErrors()) {
+        model.addAttribute("cinemaId", cinemaId);
+        return "rooms/create-room";
     }
+
+    Optional<Cinema> optional = cinemaRepository.findById(cinemaId);
+    if (optional.isPresent()) {
+        room.setCinema(optional.get());
+        roomRepository.save(room);
+        return "redirect:/cinema/" + cinemaId;
+    }
+
+    return "redirect:/cinemes";
+}
 
     // Mostrar formulari editar sala
     @GetMapping("/room/edit/{id}")
@@ -73,18 +86,32 @@ public class RoomController {
     }
 
     // Editar sala
-    @PostMapping("/room/edit")
-    public String editRoom(@ModelAttribute Room room) {
-        Optional<Room> optional = roomRepository.findById(room.getId());
-        if (optional.isPresent()) {
-            Room existing = optional.get();
-            existing.setName(room.getName());
-            existing.setCapacity(room.getCapacity());
-            roomRepository.save(existing);
-            return "redirect:/cinema/" + existing.getCinema().getId();
+   @PostMapping("/room/edit")
+public String editRoom(@Valid @ModelAttribute Room room,
+                       BindingResult result,
+                       Model model) {
+
+    Optional<Room> optional = roomRepository.findById(room.getId());
+
+    if (result.hasErrors()) {
+        if(optional.isPresent()){
+            model.addAttribute("cinema", optional.get().getCinema());
         }
-        return "redirect:/cinemes";
+        return "rooms/edit-room";
     }
+
+    if (optional.isPresent()) {
+        Room existing = optional.get();
+        existing.setName(room.getName());
+        existing.setCapacity(room.getCapacity());
+
+        roomRepository.save(existing);
+
+        return "redirect:/cinema/" + existing.getCinema().getId();
+    }
+
+    return "redirect:/cinemes";
+}
 
     // Esborrar sala
     @GetMapping("/room/delete/{id}")
