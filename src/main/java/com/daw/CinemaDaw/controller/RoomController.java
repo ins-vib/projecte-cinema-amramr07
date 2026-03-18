@@ -1,5 +1,6 @@
 package com.daw.CinemaDaw.controller;
 
+import java.util.Comparator;
 import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.daw.CinemaDaw.domain.cinema.Cinema;
 import com.daw.CinemaDaw.domain.cinema.Room;
+import com.daw.CinemaDaw.domain.cinema.Seat;
 import com.daw.CinemaDaw.repository.CinemaRepository;
 import com.daw.CinemaDaw.repository.RoomRepository;
 
@@ -52,7 +54,6 @@ public class RoomController {
         return "redirect:/cinemes";
     }
 
-    // Crear sala
    @PostMapping("/room/create")
 public String crearRoom(@Valid @ModelAttribute Room room,
                         BindingResult result,
@@ -61,6 +62,7 @@ public String crearRoom(@Valid @ModelAttribute Room room,
 
     if (result.hasErrors()) {
         model.addAttribute("cinemaId", cinemaId);
+        cinemaRepository.findById(cinemaId).ifPresent(c -> model.addAttribute("cinema", c)); 
         return "rooms/create-room";
     }
 
@@ -85,7 +87,6 @@ public String crearRoom(@Valid @ModelAttribute Room room,
         return "redirect:/cinemes";
     }
 
-    // Editar sala
    @PostMapping("/room/edit")
 public String editRoom(@Valid @ModelAttribute Room room,
                        BindingResult result,
@@ -94,7 +95,8 @@ public String editRoom(@Valid @ModelAttribute Room room,
     Optional<Room> optional = roomRepository.findById(room.getId());
 
     if (result.hasErrors()) {
-        if(optional.isPresent()){
+        if (optional.isPresent()) {
+            room.setCinema(optional.get().getCinema()); 
             model.addAttribute("cinema", optional.get().getCinema());
         }
         return "rooms/edit-room";
@@ -104,9 +106,7 @@ public String editRoom(@Valid @ModelAttribute Room room,
         Room existing = optional.get();
         existing.setName(room.getName());
         existing.setCapacity(room.getCapacity());
-
         roomRepository.save(existing);
-
         return "redirect:/cinema/" + existing.getCinema().getId();
     }
 
@@ -124,4 +124,22 @@ public String editRoom(@Valid @ModelAttribute Room room,
         }
         return "redirect:/cinemes";
     }
+
+@GetMapping("/room/{id}/seats")
+public String verSeients(@PathVariable Long id, Model model) {
+    Optional<Room> optional = roomRepository.findById(id);
+    if (optional.isPresent()) {
+        Room room = optional.get();
+
+        
+        room.getSeats().sort(
+            Comparator.comparingInt(Seat::getSeatRow)
+                      .thenComparingInt(Seat::getSeatNumber)
+        );
+
+        model.addAttribute("room", room);
+        return "rooms/room-seats";
+    }
+    return "redirect:/cinemes";
+}
 }

@@ -1,34 +1,37 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    
-
 <body>
-
 <div th:replace="~{layout :: layout(~{::content})}">
+    <div th:fragment="content">
 
-<div th:fragment="content">
+        <h1>Editar Sala</h1>
 
-<h1>Editar Sala</h1>
+        <form th:action="@{/room/edit}" th:object="${room}" method="post">
 
-<form th:action="@{/room/edit}" th:object="${room}" method="post">
-    <input type="hidden" th:field="*{id}">
+            <input type="hidden" th:field="*{id}">
 
-    <div>
-        <label>Nom:</label>
-        <input type="text" th:field="*{name}" /><br><br>
+            <div>
+                <label>Nom:</label>
+                <input type="text" th:field="*{name}" />
+                <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red;"></div>
+            </div>
+
+            <br>
+
+            <div>
+                <label>Capacitat:</label>
+                <input type="number" th:field="*{capacity}" />
+                <div th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}" style="color:red;"></div>
+            </div>
+
+            <br>
+
+            <button type="submit">Guardar</button>
+            <a th:href="@{/cinema/{id}(id=${room.cinema.id})}">Tornar enrere</a>
+
+        </form>
+
     </div>
-    <div>
-        <label>Capacitat:</label>
-        <input type="number" th:field="*{capacity}" /><br><br>
-    </div>
-
-    <button type="submit">Guardar</button>
-    <a th:href="@{/cinema/{id}(id=${room.cinema.id})}">Tornar enrere</a>
-</form>
-
 </div>
-
-</div>
-
 </body>
 </html>

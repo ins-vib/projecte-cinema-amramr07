@@ -1,0 +1,36 @@
+<div th:replace="~{layout :: layout(~{::content})}">
+<div th:fragment="content">
+
+<h1>Editar Silla</h1>
+
+<form th:action="@{/seat/edit}" th:object="${seat}" method="post">
+    <input type="hidden" th:field="*{id}" />
+    
+    <label>Fila:</label>
+    <input type="number" th:field="*{seatRow}" /><br/>
+
+    <label>Número:</label>
+    <input type="number" th:field="*{seatNumber}" /><br/>
+
+    <label>PosX:</label>
+    <input type="number" th:field="*{posX}" /><br/>
+
+    <label>PosY:</label>
+    <input type="number" th:field="*{posY}" /><br/>
+
+    <label>Tipo:</label>
+    <select th:field="*{type}">
+        <option th:each="t : ${T(com.daw.CinemaDaw.domain.cinema.SeatType).values()}"
+                th:value="${t}" th:text="${t}"></option>
+    </select><br/>
+
+    <label>Activo:</label>
+    <input type="checkbox" th:field="*{active}" /><br/><br/>
+
+    <button type="submit">Guardar</button>
+</form>
+
+<a th:href="@{/room/{id}/seats(id=${seat.room.id})}">Tornar a la sala</a>
+
+</div>
+</div>

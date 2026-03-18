@@ -69,18 +69,15 @@ public class Proves implements CommandLineRunner{
 
        List<Room> allRooms = roomRepository.findAll();
 
-List<Room> allRooms1 = roomRepository.findAll();
-
 for (Room room : allRooms) {
-    for (int i = 0; i < 10; i++) {
-        for(int j = 0; j<10; j++){
-            Seat seat = new Seat(j, j, i, j, SeatType.STANDARD, true);
-            seat.setRoom(room);
-            seatRepository.save(seat);
-        }
-        
+    int cols = 10; // número de asientos por fila (puedes cambiar)
+    for (int i = 0; i < room.getCapacity(); i++) {
+        int row = i / cols + 1;
+        int number = i % cols + 1;
+        Seat seat = new Seat(row, number, row, number, SeatType.STANDARD, true);
+        seat.setRoom(room);
+        seatRepository.save(seat);
     }
-
 }
    
 

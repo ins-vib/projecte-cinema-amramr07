@@ -15,22 +15,22 @@
 <label>Nom:</label>
 <input type="text" th:field="*{name}" />
 <br><br>
-<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red;"></div>
 
 <label>Adreça:</label>
 <input type="text" th:field="*{adress}" />
 <br><br>
-<div th:if="${#fields.hasErrors('adress')}" th:errors="*{adress}"></div>
+<div th:if="${#fields.hasErrors('adress')}" th:errors="*{adress}" style="color:red;"></div>
 
 <label>Ciutat:</label>
 <input type="text" th:field="*{city}" />
 <br><br>
-<div th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></div>
+<div th:if="${#fields.hasErrors('city')}" th:errors="*{city}" style="color:red;"></div>
 
 <label>Codi Postal:</label>
 <input type="text" th:field="*{postalCode}" />
 <br><br>
-<div th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}"></div>
+<div th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" style="color:red;"></div>
 
 <button type="submit">Guardar</button>
 

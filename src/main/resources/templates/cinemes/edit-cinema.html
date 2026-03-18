@@ -16,19 +16,19 @@
 
 <label>Nom:</label>
 <input type="text" th:field="*{name}" />
-<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+<div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red;"></div>
 
 <label>Adreça:</label>
 <input type="text" th:field="*{adress}" />
-<div th:if="${#fields.hasErrors('adress')}" th:errors="*{adress}"></div>
+<div th:if="${#fields.hasErrors('adress')}" th:errors="*{adress}" style="color:red;"></div>
 
 <label>Ciutat:</label>
 <input type="text" th:field="*{city}" />
-<div th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></div>
+<div th:if="${#fields.hasErrors('city')}" th:errors="*{city}" style="color:red;"></div>
 
 <label>Codi Postal:</label>
 <input type="text" th:field="*{postalCode}" />
-<div th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}"></div>
+<div th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}" style="color:red;"></div>
 
 <br>
 

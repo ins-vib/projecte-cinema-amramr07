@@ -1,33 +1,33 @@
-    package com.daw.CinemaDaw.domain.cinema;
+        package com.daw.CinemaDaw.domain.cinema;
 
-    import jakarta.persistence.Column;
-    import jakarta.persistence.Entity;
-    import jakarta.persistence.EnumType;
-    import jakarta.persistence.Enumerated;
-    import jakarta.persistence.GeneratedValue;
-    import jakarta.persistence.GenerationType;
-    import jakarta.persistence.Id;
-    import jakarta.persistence.ManyToOne;
+        import jakarta.persistence.Column;
+        import jakarta.persistence.Entity;
+        import jakarta.persistence.EnumType;
+        import jakarta.persistence.Enumerated;
+        import jakarta.persistence.GeneratedValue;
+        import jakarta.persistence.GenerationType;
+        import jakarta.persistence.Id;
+        import jakarta.persistence.ManyToOne;
 
-    @Entity
-    public class Seat {
-        @Id
-        @GeneratedValue(strategy=GenerationType.IDENTITY)
-        private Long id;
+        @Entity
+        public class Seat {
+            @Id
+            @GeneratedValue(strategy=GenerationType.IDENTITY)
+            private Long id;
 
+            @Column
+        private int seatRow;      
+        @ManyToOne        
+            private Room room;
         @Column
-    private int seatRow;      
-    @ManyToOne        
-        private Room room;
-    @Column
-    private int seatNumber;         
-    @Column 
-    private int posX;               
-    @Column 
-    private int posY;               
-    @Column 
-    @Enumerated(EnumType.STRING)
-    private SeatType type = SeatType.STANDARD;      
+        private int seatNumber;         
+        @Column 
+        private int posX;               
+        @Column 
+        private int posY;               
+        @Column 
+        @Enumerated(EnumType.STRING)
+        private SeatType type = SeatType.STANDARD;      
         
         @Column 
         private boolean isActive;

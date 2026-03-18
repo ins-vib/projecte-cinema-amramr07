@@ -913,3 +913,19 @@ hr { border: none; height: 1px; background: linear-gradient(90deg, transparent, 
   header::before, form::before, table::before { height: 2px; }
 }
 
+.seat {
+    color: var(--ocean-primary);
+    filter: drop-shadow(0 0 8px rgba(5,130,202,0.6)) drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+    transition: color 0.3s ease, filter 0.3s ease;
+}
+
+.seat-item:hover .seat {
+    color: var(--gold);
+    filter: drop-shadow(0 0 14px rgba(247,201,72,0.8)) drop-shadow(0 6px 16px rgba(0,0,0,0.6));
+}
+
+/* Margen global en todas las páginas */
+body > *:not(header):not(footer):not(section) {
+  padding-left: 4rem;
+  padding-right: 4rem;
+}
