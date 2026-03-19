@@ -2,6 +2,12 @@
 <div th:fragment="content">
 
 <h1>Editar Silla</h1>
+<form th:action="@{/seat/delete/{id}(id=${seat.id})}" method="post">
+    <button type="submit"
+            onclick="return confirm('¿Seguro que quieres eliminar esta silla?')">
+        Eliminar
+    </button>
+</form>
 
 <form th:action="@{/seat/edit}" th:object="${seat}" method="post">
     <input type="hidden" th:field="*{id}" />
@@ -20,8 +26,11 @@
 
     <label>Tipo:</label>
     <select th:field="*{type}">
-        <option th:each="t : ${T(com.daw.CinemaDaw.domain.cinema.SeatType).values()}"
-                th:value="${t}" th:text="${t}"></option>
+        <option th:each="t : ${types}"
+        th:value="${t}"
+        th:text="${t}">
+            
+        </option>
     </select><br/>
 
     <label>Activo:</label>

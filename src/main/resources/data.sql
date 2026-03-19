@@ -49,3 +49,23 @@ INSERT INTO MOVIE (TITLE, DURATION_MINUTES, GENRE, SINOPSIS, RELEASE_DATE) VALUE
 INSERT INTO MOVIE (TITLE, DURATION_MINUTES, GENRE, SINOPSIS, RELEASE_DATE) VALUES
 ('Spider-Man: Homecoming', 133, 'Action/Adventure', 'Peter Parker tries to balance high school life with being a superhero.', '2017-07-07');
 
+
+
+INSERT INTO SCREENING (screening_date_time, price, movie_id, room_id) VALUES 
+('2026-03-20T18:00', 8.50, 1, 1),
+('2026-03-20T21:00', 8.50, 1, 1),
+('2026-03-21T17:00', 8.50, 1, 1),
+('2026-03-21T20:00', 8.50, 1, 1),
+('2026-03-21T19:00', 8.50, 1, 1),
+
+('2026-03-20T18:00', 8.50, 2, 2),
+('2026-03-20T21:00', 8.50, 2, 2),
+('2026-03-21T17:00', 8.50, 2, 2),
+('2026-03-21T20:00', 8.50, 2, 2),
+('2026-03-21T19:00', 8.50, 2, 2),
+
+('2026-03-20T18:00', 8.50, 3, 2),
+('2026-03-20T21:00', 8.50, 3, 2),
+('2026-03-21T17:00', 8.50, 3, 2),
+('2026-03-21T20:00', 8.50, 3, 2),
+('2026-03-21T19:00', 8.50, 3, 2);

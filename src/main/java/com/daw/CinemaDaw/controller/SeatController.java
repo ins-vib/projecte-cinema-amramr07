@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.daw.CinemaDaw.domain.cinema.Room;
 import com.daw.CinemaDaw.domain.cinema.Seat;
+import com.daw.CinemaDaw.domain.cinema.SeatType;
 import com.daw.CinemaDaw.repository.RoomRepository;
 import com.daw.CinemaDaw.repository.SeatRepository;
 
@@ -83,6 +84,7 @@ public class SeatController {
         Optional<Seat> optional = seatRepository.findById(id);
         if (optional.isPresent()) {
             model.addAttribute("seat", optional.get());
+            model.addAttribute("types", SeatType.values());
             return "seats/edit-seat";
         }
         return "redirect:/cinemes";
@@ -112,21 +114,20 @@ public class SeatController {
     }
 
     // Borrar seat y actualizar capacidad
-    @GetMapping("/seat/delete/{id}")
-    public String deleteSeat(@PathVariable Long id) {
-        Optional<Seat> optional = seatRepository.findById(id);
-        if (optional.isPresent()) {
-            Seat seat = optional.get();
-            Room room = seat.getRoom();
-            Long roomId = room.getId();
-            seatRepository.delete(seat);
+   @PostMapping("/seat/delete/{id}")
+public String deleteSeat(@PathVariable Long id) {
+    Optional<Seat> optional = seatRepository.findById(id);
+    if (optional.isPresent()) {
+        Seat seat = optional.get();
+        Room room = seat.getRoom();
+        Long roomId = room.getId();
+        seatRepository.delete(seat);
 
-           
-            room.setCapacity(room.getSeats().size() - 1);
-            roomRepository.save(room);
+        room.setCapacity(room.getSeats().size() - 1);
+        roomRepository.save(room);
 
-            return "redirect:/room/" + roomId + "/seats";
-        }
-        return "redirect:/cinemes";
+        return "redirect:/room/" + roomId + "/seats";
     }
+    return "redirect:/cinemes";
+}
 }

@@ -1,3 +1,5 @@
+
+
 @startuml
 
 class Cinema {
@@ -92,5 +94,27 @@ DISABLED
 
 Cinema "1" -- "0..*" Room
 Room "1" -- "0..*" Seat
+class Movie{
+title
+duration
+genre
+}
+
+class Room{
+name 
+capacity
+}
+
+' Relació entre Movie i Room
+Movie "0..*" -- "0..*" Room
+
+'Classe associativa
+(Movie, Room) .. Screening
+
+class Screening{
+date
+time
+price
+}
 
 @enduml

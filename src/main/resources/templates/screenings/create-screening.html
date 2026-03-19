@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout :: layout(~{::content})}">
+<div th:fragment="content">
+
+    <h1>Nova Sessió per <span th:text="${movie.title}"></span></h1>
+
+    <form th:action="@{/screening/create}" th:object="${screening}" method="post">
+        <input type="hidden" name="movieId" th:value="${movie.id}">
+
+        <div>
+            <label>Data i Hora:</label>
+            <input type="datetime-local" th:field="*{screeningDateTime}" />
+            <br>
+        </div>
+
+        <div>
+            <label>Sala:</label>
+            <select name="roomId">
+                <option value="" disabled selected>-- Selecciona una sala --</option>
+                <option th:each="room : ${rooms}"
+                        th:value="${room.id}"
+                        th:text="${room.cinema.name} + ' — ' + ${room.name}">
+                </option>
+            </select>
+            <br>
+        </div>
+
+        <div>
+            <label>Preu (€):</label>
+            <input type="number" step="0.01" min="0" th:field="*{price}" />
+            <br>
+        </div>
+
+        <br>
+        <button type="submit">Guardar</button>
+        <a th:href="@{/movies/{id}(id=${movie.id})}">Tornar enrere</a>
+    </form>
+
+</div>
+</div>
+</body>
+</html>

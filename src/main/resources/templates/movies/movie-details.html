@@ -1,42 +1,58 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    
-
 <body>
-
 <div th:replace="~{layout :: layout(~{::content})}">
-
 <div th:fragment="content">
 
-<h1 th:text="${movie.title}"></h1>
+    <h1 th:text="${movie.title}"></h1>
+    <p><strong>Duration:</strong> <span th:text="${movie.duration}"></span> minutes</p>
+    <p><strong>Genre:</strong> <span th:text="${movie.genre}"></span></p>
+    <p><strong>Description:</strong> <span th:text="${movie.description}"></span></p>
+    <p><strong>Release Date:</strong> <span th:text="${movie.releaseDate}"></span></p>
 
-<p>
-<strong>Duration:</strong>
-<span th:text="${movie.duration}"></span> minutes
-</p>
+    <br>
+    <hr>
 
-<p>
-<strong>Genre:</strong>
-<span th:text="${movie.genre}"></span>
-</p>
+    <h2>Sessions / Screenings</h2>
 
-<p>
-<strong>Description:</strong>
-<span th:text="${movie.description}"></span>
-</p>
+    <a th:href="@{/screening/create(movieId=${movie.id})}">+ Nova Sessió</a>
 
-<p>
-<strong>Release Date:</strong>
-<span th:text="${movie.releaseDate}"></span>
-</p>
+    <br><br>
 
-<br>
+    <div th:if="${#lists.isEmpty(screenings)}">
+        <p>No hi ha sessions programades per aquesta pel·lícula.</p>
+    </div>
 
-<a th:href="@{/movies}">Back to list</a>
+    <table border="1" th:unless="${#lists.isEmpty(screenings)}">
+        <thead>
+            <tr>
+                <th>Data i Hora</th>
+                <th>Sala</th>
+                <th>Cinema</th>
+                <th>Preu</th>
+                <th>Accions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="s : ${screenings}">
+                <td th:text="${#temporals.format(s.screeningDateTime, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${s.room.name}"></td>
+                <td th:text="${s.room.cinema.name}"></td>
+                <td th:text="${s.price} + ' €'"></td>
+                <td>
+                    <a th:href="@{/screening/edit/{id}(id=${s.id})}">Editar</a>
+                    &nbsp;
+                    <a th:href="@{/screening/delete/{id}(id=${s.id})}"
+                       onclick="return confirm('Segur que vols esborrar aquesta sessió?')">Esborrar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <a th:href="@{/movies}">Back to list</a>
 
 </div>
-
 </div>
-
 </body>
 </html>
