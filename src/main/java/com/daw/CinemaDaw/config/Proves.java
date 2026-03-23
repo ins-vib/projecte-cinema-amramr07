@@ -5,15 +5,19 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.daw.CinemaDaw.domain.cinema.Cinema;
 import com.daw.CinemaDaw.domain.cinema.Room;
 import com.daw.CinemaDaw.domain.cinema.Seat;
 import com.daw.CinemaDaw.domain.cinema.SeatType;
+import com.daw.CinemaDaw.domain.user.Role;
+import com.daw.CinemaDaw.domain.user.User;
 import com.daw.CinemaDaw.repository.CinemaRepository;
 import com.daw.CinemaDaw.repository.RoomRepository;
 import com.daw.CinemaDaw.repository.SeatRepository;
+import com.daw.CinemaDaw.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -22,21 +26,55 @@ public class Proves implements CommandLineRunner{
     private final CinemaRepository cinemaRepository;
     private RoomRepository roomRepository;
     private SeatRepository seatRepository;
+    private UserRepository userRepository;
+    BCryptPasswordEncoder encoder;
+
  
  
  
-    public Proves(CinemaRepository cinemaRepository, RoomRepository roomRepository, SeatRepository seatRepository) {
+  
+   
+   
+   
+  
+
+
+
+
+
+
+
+    public Proves(CinemaRepository cinemaRepository, RoomRepository roomRepository, SeatRepository seatRepository,
+            UserRepository userRepository, BCryptPasswordEncoder encoder) {
         this.cinemaRepository = cinemaRepository;
         this.roomRepository = roomRepository;
-        this.seatRepository= seatRepository;
+        this.seatRepository = seatRepository;
+        this.userRepository = userRepository;
+        this.encoder = encoder;
     }
-   
-   
-   
+
+
+
+
+
+
+
     @Override
     @Transactional
     
     public void run (String... args) throws Exception{
+
+        User admin = new User();
+        admin.setUsername("admin");
+        admin.setPassword(encoder.encode("1234"));
+        admin.setRole(Role.ADMIN);
+        userRepository.save(admin);
+        
+        User client = new User();
+        client.setUsername("client");
+        client.setPassword(encoder.encode("1234"));
+        client.setRole(Role.CLIENT);
+        userRepository.save(client);
         
        Cinema cinema1 = new Cinema("Ocine", "Gavarres, 46", "Tarragona", "43122");
        Cinema cinema2 = new Cinema("Oscars", "Major,15", "Tarragona", "43100");
@@ -126,6 +164,8 @@ for (Room room : allRooms) {
 
        }
        }
+
+     
 
     
     }

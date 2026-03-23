@@ -20,6 +20,11 @@ public HomeController(NewsService newsService){
     this.newsService = newsService;
 }
 
+ @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
    
 
     // Página principal
@@ -36,6 +41,17 @@ public HomeController(NewsService newsService){
         }
         model.addAttribute("llista", llista);
         return "home";
+    }
+
+     @GetMapping("/admin")
+    public String admin() {
+        return "admin/home";
+    }
+
+      @GetMapping("/client")
+    public String client(Model model) {
+       
+        return "client/home";
     }
 
    

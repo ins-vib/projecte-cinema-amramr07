@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.daw.CinemaDaw.domain.cinema.Movie;
 import com.daw.CinemaDaw.repository.MovieRepository;
+import com.daw.CinemaDaw.repository.ScreeningRepository;
 
 import jakarta.validation.Valid;
 
@@ -20,9 +21,13 @@ import jakarta.validation.Valid;
 public class MovieController {
 
     private MovieRepository movieRepository;
+    private ScreeningRepository screeningRepository;
 
-    public MovieController(MovieRepository movieRepository) {
+  
+
+    public MovieController(MovieRepository movieRepository, ScreeningRepository screeningRepository) {
         this.movieRepository = movieRepository;
+        this.screeningRepository = screeningRepository;
     }
 
     @GetMapping("/movies")
@@ -76,14 +81,16 @@ public String updateMovie(@Valid @ModelAttribute Movie movie,
 }
 
     // View movie details
-    @GetMapping("/movies/{id}")
-    public String viewMovie(@PathVariable Long id, Model model) {
-        Optional<Movie> optionalMovie = movieRepository.findById(id);
-        if (optionalMovie.isPresent()) {
-            model.addAttribute("movie", optionalMovie.get());
-            return "movies/movie-details";
-        }
-        return "redirect:/movies"; // if movie not found
+  @GetMapping("/movies/{id}")
+public String viewMovie(@PathVariable Long id, Model model) {
+    Optional<Movie> optionalMovie = movieRepository.findById(id);
+    if (optionalMovie.isPresent()) {
+        model.addAttribute("movie", optionalMovie.get());
+        model.addAttribute("screenings", screeningRepository.findByMovieId(id)); // 👈 afegir això
+        
+        return "movies/movie-details";
     }
+    return "redirect:/movies";
+}
 }
 
