@@ -45,7 +45,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
         // Altres casos
         } else {
-            response.sendRedirect("/");
+            response.sendRedirect("/landing");
         }
     }
 }

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registre — Aplicació Cinema</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+    
+</head>
+<body>
+
+    <!-- Film strips -->
+    <div class="filmstrip left">
+        <div th:each="i : ${#numbers.sequence(1, 30)}" class="filmstrip-hole"></div>
+    </div>
+    <div class="filmstrip right">
+        <div th:each="i : ${#numbers.sequence(1, 30)}" class="filmstrip-hole"></div>
+    </div>
+
+    <!-- Fallback strips (visible without Thymeleaf) -->
+    <!--/*-->
+    <div class="filmstrip left">
+        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
+        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
+        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
+        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
+        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
+        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
+        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
+        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
+    </div>
+    <div class="filmstrip right">
+        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
+        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
+        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
+        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
+        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
+        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
+        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
+        <div class="filmstrip-hole"></div><div class="filmstrip-hole"></div>
+    </div>
+    <!--*/-->
+
+    <div class="register-wrapper">
+        <!-- Brand -->
+        <div class="brand">
+            <span class="brand-icon">🎞</span>
+            <h1>Aplicació Cinema</h1>
+            <p class="subtitle">Portal de l'espectador</p>
+        </div>
+
+        <div class="ornament">✦</div>
+
+        <!-- Card -->
+        <div class="card">
+            <p class="card-title">Crear un compte</p>
+
+            <!-- Error global (Thymeleaf) -->
+            <div class="alert-error"
+                 th:if="${errorMessage}"
+                 th:text="${errorMessage}">
+            </div>
+
+            <form th:action="@{/register}" th:object="${user}" method="post">
+
+                <!-- Username -->
+                <div class="form-group">
+                    <label for="username">Nom d'usuari</label>
+                    <input type="text"
+                           id="username"
+                           th:field="*{username}"
+                           placeholder="el teu nom d'usuari"
+                           autocomplete="username"
+                           required />
+                    <div class="field-error"
+                         th:if="${#fields.hasErrors('username')}"
+                         th:errors="*{username}">
+                    </div>
+                </div>
+
+                <!-- Email (optional field — remove if not in User entity) -->
+                <div class="form-group">
+                    <label for="email">Correu electrònic</label>
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           placeholder="correu@exemple.com"
+                           autocomplete="email" />
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password">Contrasenya</label>
+                    <input type="password"
+                           id="password"
+                           th:field="*{password}"
+                           placeholder="mínim 4 caràcters"
+                           autocomplete="new-password"
+                           required />
+                    <p class="password-hint">Utilitza una combinació de lletres i números.</p>
+                    <div class="field-error"
+                         th:if="${#fields.hasErrors('password')}"
+                         th:errors="*{password}">
+                    </div>
+                </div>
+
+                <!-- Confirm password -->
+                <div class="form-group">
+                    <label for="confirmPassword">Confirma la contrasenya</label>
+                    <input type="password"
+                           id="confirmPassword"
+                           name="confirmPassword"
+                           placeholder="repeteix la contrasenya"
+                           autocomplete="new-password"
+                           required />
+                </div>
+
+                <!-- Hidden role: always CLIENT on self-register -->
+                <input type="hidden" name="role" value="CLIENT" />
+
+                <button type="submit" class="btn-submit">
+                    Crear compte
+                </button>
+            </form>
+
+            <div class="card-footer">
+                Ja tens compte? <a th:href="@{/login}" href="/login">Inicia sessió</a>
+            </div>
+        </div>
+
+        <div class="back-home">
+            <a th:href="@{/}" href="/">← Tornar a l'inici</a>
+        </div>
+    </div>
+
+</body>
+</html>

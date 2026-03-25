@@ -1,13 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    
-
 <body>
-
 <div th:replace="~{layout :: layout(~{::content})}">
-
     <div th:fragment="content">
-
         <section>
             <h2>Viu la màgia del cinema</h2>
             <p>Les millors estrenes, la millor experiència</p>
@@ -15,16 +10,12 @@
 
         <section>
             <h2>Notícies</h2>
-
             <div th:each="n : ${llista}">
                 <h3 th:text="${n.headline}"></h3>
                 <p th:text="${n.body}"></p>
             </div>
         </section>
-
     </div>
-
 </div>
-
 </body>
 </html>

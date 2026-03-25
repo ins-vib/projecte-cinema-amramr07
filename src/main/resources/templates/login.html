@@ -1,20 +1,32 @@
-
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    
-
 <body>
+<div th:replace="~{layout-public :: layout(~{::content})}">
+    <div th:fragment="content">
 
-<div th:replace="~{layout :: layout(~{::content})}">
+        <h2>Iniciar Sessió</h2>
 
-<div th:fragment="content">
+        <div th:if="${param.error}" style="color:red;">
+            Usuari o contrasenya incorrectes.
+        </div>
 
-<form th:action="@{/login}" method="post">
-    <input type="text" name="username"> 
-    <input type="password" name="password"/>
-    <button>Entrar</button>
-</form>
+        <div th:if="${param.logout}" style="color:green;">
+            Has tancat la sessió correctament.
+        </div>
 
+        <form th:action="@{/login}" method="post">
+            <label>Usuari:</label>
+            <input type="text" name="username" />
+            <br><br>
+            <label>Contrasenya:</label>
+            <input type="password" name="password" />
+            <br><br>
+            <button type="submit">Entrar</button>
+        </form>
+
+    </div>
+</div>
 </body>
 </html>
+
+

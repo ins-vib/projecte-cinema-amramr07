@@ -1,4 +1,21 @@
-<h1>Panell d'Administració</h1>
-<p>Benvingut administrador</p>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout :: layout(~{::content})}">
+    <div th:fragment="content">
+        <h1>Panell d'Administració</h1>
+        <p>Benvingut administrador</p>
+        <hr>
 
-<a href="/logout">Logout</a>
+        <h2>Gestió</h2>
+        <ul>
+            <li><a th:href="@{/cinemes}">🎭 Gestionar Cinemes</a></li>
+            <li><a th:href="@{/movies}">🎬 Gestionar Pel·lícules</a></li>
+        </ul>
+
+        <br>
+        <a th:href="@{/logout}">Logout</a>
+    </div>
+</div>
+</body>
+</html>

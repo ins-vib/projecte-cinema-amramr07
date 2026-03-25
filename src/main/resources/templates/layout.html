@@ -1,21 +1,53 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ca"
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/springsecurity6"
+      lang="ca"
       th:fragment="layout(content)">
-
 <head>
     <meta charset="UTF-8">
     <title>Aplicació Cinema</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
-
 <body>
-
 <header>
-    <h1>Aplicació Cinema</h1>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h1>Aplicació Cinema</h1>
+
+        <!-- No autenticado: Login y Register -->
+        <div sec:authorize="isAnonymous()">
+            <a href="/login">Login</a>
+            &nbsp;
+            <a href="/register">Register</a>
+        </div>
+
+        <!-- Admin: nombre + logout -->
+        <div sec:authorize="hasRole('ADMIN')">
+            <span sec:authentication="name"></span> (Admin)
+            &nbsp;
+            <a href="/logout">Logout</a>
+        </div>
+
+        <!-- Client: nombre + logout -->
+        <div sec:authorize="hasRole('CLIENT')">
+            <span sec:authentication="name"></span>
+            &nbsp;
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+
     <nav>
-        <a href="/">Home</a>
-        <a href="/movies">Movies</a>
-        <a href="/cinemes">Cinema</a>
+        <a href="/home">Home</a>
+
+        <!-- Admin ve TODO igual que antes -->
+        <span sec:authorize="hasRole('ADMIN')">
+            <a href="/movies">Movies</a>
+            <a href="/cinemes">Cinemes</a>
+        </span>
+
+        <!-- Cliente solo ve sus películas -->
+        <span sec:authorize="hasRole('CLIENT')">
+            <a href="/client">Apartat Client</a>
+        </span>
     </nav>
     <hr>
 </header>
@@ -27,6 +59,5 @@
     <hr>
     <p>DAW1 2016</p>
 </footer>
-
 </body>
 </html>

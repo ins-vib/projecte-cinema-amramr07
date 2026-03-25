@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplicació Cinema</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h1>Aplicació Cinema</h1>
+        <div>
+            <a href="/login">Login</a>
+            &nbsp;
+            <a href="/register">Register</a>
+        </div>
+    </div>
+    <hr>
+</header>
+
+<main>
+    <section>
+        <h2>Viu la màgia del cinema</h2>
+        <p>Les millors estrenes, la millor experiència</p>
+    </section>
+
+    <section>
+        <h2>Notícies</h2>
+        <div th:each="n : ${llista}">
+            <h3 th:text="${n.headline}"></h3>
+            <p th:text="${n.body}"></p>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <hr>
+    <p>DAW1 2016</p>
+</footer>
+
+</body>
+</html>
