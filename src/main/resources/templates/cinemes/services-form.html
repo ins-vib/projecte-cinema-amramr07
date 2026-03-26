@@ -1,0 +1,15 @@
+
+
+   <form th:action="@{/services}" th:object="${servicesDTO}" method="post">
+
+    <label th:each="s : ${allServices}">
+        <input type="checkbox" th:field="*{services}" th:value="${s}">
+        <span th:text="${s}"></span>
+    </label>
+
+    <button type="submit">Guardar</button>
+
+</form>
+    
+
+</form>
