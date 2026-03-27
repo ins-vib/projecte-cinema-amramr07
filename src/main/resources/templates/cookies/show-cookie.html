@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mostrar Cookie</title>
+</head>
+<body>
+
+<h2>Valor de la cookie</h2>
+
+<p th:if="${username != null}">
+    Benvingut <span th:text="${username}"></span>!
+</p>
+
+<p th:if="${username == null}">
+    No hi ha cap cookie guardada.
+</p>
+
+<br>
+
+<a th:href="@{/cookies/form-cookie}">Tornar al formulari</a>
+<br>
+<a th:href="@{/cookies/delete-cookie}">Eliminar cookie</a>
+
+</body>
+</html>

@@ -26,10 +26,10 @@ public class SecurityConfig {
 
             // Accés públic
             .requestMatchers("/h2-console/**").permitAll()
-            .requestMatchers("/","/landing", "/login", "/register", "/css/**").permitAll()
+            .requestMatchers("/","/landing", "/login", "/register", "/css/**", "/cookies/**").permitAll()
 
             // Rutes protegides per rol
-            .requestMatchers("/admin/**").hasRole("ADMIN")
+            .requestMatchers("/admin/**" , "/movies/**").hasRole("ADMIN")
             .requestMatchers("/client/**").hasAnyRole("CLIENT", "ADMIN")
 
             // Qualsevol altra petició necessita autenticació

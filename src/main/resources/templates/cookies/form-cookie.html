@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Form Cookie</title>
+</head>
+<body>
+
+<h2>Introdueix el teu nom</h2>
+
+<form th:action="@{/cookies/save-cookie}" method="post">
+    <input type="text" name="username" placeholder="Nom" required>
+    <button type="submit">Guardar cookie</button>
+</form>
+
+<br>
+
+<a th:href="@{/cookies/showCookie}">Veure cookie</a>
+
+</body>
+</html>
