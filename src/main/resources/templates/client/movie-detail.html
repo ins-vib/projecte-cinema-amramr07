@@ -1,0 +1,18 @@
+<div th:each="s : ${screenings}">
+    <a th:href="@{/client/screening/{id}(id=${s.id})}">
+        <p>
+            🎬 Cine: 
+            <span th:text="${s.room.cinema.name}"></span> |
+            
+            🪑 Sala: 
+            <span th:text="${s.room.name}"></span> |
+            
+            📅 Fecha: 
+            <span th:text="${s.screeningDateTime}"></span> |
+            
+            💶 Precio: 
+            <span th:text="${s.price}"></span> €
+        </p>
+    </a>
+</div>
+<a href="/client">Volver</a>

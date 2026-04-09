@@ -111,6 +111,10 @@
         public String toString() {
             return "Seat [id=" + id + ", seatRow=" + seatRow + "]";
         }
+        public void setReserved(boolean b) {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'setReserved'");
+        }
     
 
         
