@@ -2,7 +2,6 @@ package com.daw.CinemaDaw.controller;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,14 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.daw.CinemaDaw.domain.cinema.Movie;
-import com.daw.CinemaDaw.domain.cinema.Seat;
 import com.daw.CinemaDaw.domain.movie.New;
 import com.daw.CinemaDaw.domain.movie.Screening;
 import com.daw.CinemaDaw.domain.user.Role;
 import com.daw.CinemaDaw.domain.user.User;
 import com.daw.CinemaDaw.repository.MovieRepository;
 import com.daw.CinemaDaw.repository.ScreeningRepository;
-import com.daw.CinemaDaw.repository.TicketRepository;
 import com.daw.CinemaDaw.repository.UserRepository;
 import com.daw.CinemaDaw.service.NewsService;
 
@@ -34,19 +31,19 @@ public class HomeController {
     private BCryptPasswordEncoder encoder;
     private MovieRepository movieRepository;
     private ScreeningRepository screeningRepository;
-    private TicketRepository ticketRepository;
+   
+
+   
 
    
 
     public HomeController(NewsService newsService, UserRepository userRepository, BCryptPasswordEncoder encoder,
-            MovieRepository movieRepository, ScreeningRepository screeningRepository,
-            TicketRepository ticketRepository) {
+            MovieRepository movieRepository, ScreeningRepository screeningRepository) {
         this.newsService = newsService;
         this.userRepository = userRepository;
         this.encoder = encoder;
         this.movieRepository = movieRepository;
         this.screeningRepository = screeningRepository;
-        this.ticketRepository = ticketRepository;
     }
 
     @GetMapping("/login")
@@ -92,17 +89,7 @@ public class HomeController {
         return "redirect:/client";
     }
 
-    @PostMapping("/client/reserve")
-public String reserve(@RequestParam Long seatId,
-                      @RequestParam Long screeningId) {
-
-    System.out.println("Seat: " + seatId);
-    System.out.println("Screening: " + screeningId);
-
-    // aquí luego harás lógica real de reserva
-
-    return "redirect:/client";
-}
+   
 
     @GetMapping("/register")
     public String showRegister(Model model) {
@@ -149,25 +136,20 @@ public String Home(Model model) {
 }
 
 @GetMapping("/client/screening/{id}")
-public String viewScreening(@PathVariable Long id, Model model) {
+public String selectSeat(@PathVariable Long id, Model model) {
     Optional<Screening> optional = screeningRepository.findById(id);
 
     if (optional.isPresent()) {
         Screening screening = optional.get();
-        
-        List<Seat> allSeats = screening.getRoom().getSeats();
-        
-       
-        List<Seat> freeSeats = allSeats.stream()
-            .filter(seat -> !ticketRepository.existsByScreeningIdAndSeatId(id, seat.getId()))
-            .filter(Seat::isActive) 
-            .toList();
 
         model.addAttribute("screening", screening);
-        model.addAttribute("seats", freeSeats); 
+        model.addAttribute("seats", screening.getRoom().getSeats()); // ⚠️ importante
 
-        return "client/screening-detail";
+        return "/client/screening-detail"; // nombre de tu HTML del formulario
     }
+
     return "redirect:/client";
 }
+
+
 }

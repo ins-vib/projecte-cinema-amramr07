@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dades de la Sessió</title>
+</head>
+<body>
+    <h1>Dades emmagatzemades a la sessió</h1>
+
+    <p><strong>Nom d'usuari:</strong> <span th:text="${username}">No disponible</span>
+
+    </p>
+
+    <p><strong>Hora de registre a la sessió:</strong>
+        <span th:text="${session.horaActual}">No disponible</span>
+    </p>
+</body>
+</html>
+    

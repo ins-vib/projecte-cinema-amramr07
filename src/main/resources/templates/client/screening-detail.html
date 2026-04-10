@@ -1,15 +1,7 @@
-<h1>Selecciona tu asiento</h1>
-
-<p>
-    Película: <span th:text="${screening.movie.title}"></span><br>
-    Cine: <span th:text="${screening.room.cinema.name}"></span><br>
-    Sala: <span th:text="${screening.room.name}"></span>
-</p>
-
 <form action="/client/reserve" method="post">
     <div th:each="seat : ${seats}">
         <label>
-            <input type="radio" name="seatId" th:value="${seat.id}" required>
+            <input type="checkbox" name="seatIds" th:value="${seat.id}">
             
             Fila: <span th:text="${seat.seatRow}"></span>
             Asiento: <span th:text="${seat.seatNumber}"></span>
@@ -18,5 +10,5 @@
     </div>
 
     <input type="hidden" name="screeningId" th:value="${screening.id}">
-    <button type="submit">Reservar Asiento</button>
+    <button type="submit">Reservar Asientos</button>
 </form>
