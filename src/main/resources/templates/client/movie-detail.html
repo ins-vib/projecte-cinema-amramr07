@@ -1,5 +1,5 @@
 <div th:each="s : ${screenings}">
-    <a th:href="@{/client/screening/{id}(id=${s.id})}">
+    <a th:href="@{/screenings/seats/{id}(id=${s.id})}">
         <p>
             🎬 Cine: 
             <span th:text="${s.room.cinema.name}"></span> |

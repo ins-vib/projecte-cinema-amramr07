@@ -60,7 +60,7 @@ public String guardarMovie(@ModelAttribute Movie movie) {
             model.addAttribute("movie", optionalMovie.get());
             return "movies/edit-movie";
         }
-        return "redirect:/movies"; // if movie not found
+        return "redirect:/movies"; 
     }
 
     // Update movie
@@ -86,11 +86,13 @@ public String viewMovie(@PathVariable Long id, Model model) {
     Optional<Movie> optionalMovie = movieRepository.findById(id);
     if (optionalMovie.isPresent()) {
         model.addAttribute("movie", optionalMovie.get());
-        model.addAttribute("screenings", screeningRepository.findByMovieId(id)); // 👈 afegir això
+        model.addAttribute("screenings", screeningRepository.findByMovieId(id)); 
         
         return "movies/movie-details";
     }
     return "redirect:/movies";
 }
+
 }
+
 

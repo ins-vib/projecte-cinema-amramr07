@@ -2,6 +2,9 @@ package com.daw.CinemaDaw.controller;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.daw.CinemaDaw.DTO.SeatsListDTO;
 import com.daw.CinemaDaw.domain.cinema.Movie;
 import com.daw.CinemaDaw.domain.movie.New;
 import com.daw.CinemaDaw.domain.movie.Screening;
@@ -22,6 +26,8 @@ import com.daw.CinemaDaw.repository.MovieRepository;
 import com.daw.CinemaDaw.repository.ScreeningRepository;
 import com.daw.CinemaDaw.repository.UserRepository;
 import com.daw.CinemaDaw.service.NewsService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class HomeController {
@@ -135,21 +141,50 @@ public String Home(Model model) {
     return "home";
 }
 
-@GetMapping("/client/screening/{id}")
-public String selectSeat(@PathVariable Long id, Model model) {
-    Optional<Screening> optional = screeningRepository.findById(id);
+@GetMapping("/screenings/seats/{id}")
+public String selectSeats(@PathVariable Long id, Model model, HttpSession session) {
 
-    if (optional.isPresent()) {
-        Screening screening = optional.get();
+    Optional<Screening> screening = screeningRepository.findById(id);
 
-        model.addAttribute("screening", screening);
-        model.addAttribute("seats", screening.getRoom().getSeats()); // ⚠️ importante
-
-        return "/client/screening-detail"; // nombre de tu HTML del formulario
+    if (screening.isEmpty()) {
+        return "redirect:/client/home";
     }
 
-    return "redirect:/client";
+    Map<Long, List<Long>> cart = (Map<Long, List<Long>>) session.getAttribute("cart");
+
+    if (cart == null) {
+        cart = new HashMap<>();
+    }
+
+    SeatsListDTO seatsListDTO = new SeatsListDTO();
+    seatsListDTO.setSeats(cart.get(id));
+    model.addAttribute("selectedSeats", seatsListDTO);
+    model.addAttribute("screening", screening.get());
+
+    return "client/screening-detail";
 }
+
+@PostMapping("/screenings/seats/confirm/{id}")
+public String confirmSeats(@PathVariable Long id, @ModelAttribute("selectedSeats") SeatsListDTO selectedSeats, Model model, HttpSession session) {
+
+    System.out.println("Seient seleccionats per a l'escreening " + id + ": " + selectedSeats.getSeats());
+
+    // Obtenir mapa de la sessió o crear-lo
+    Map<Long, List<Long>> cart = (Map<Long, List<Long>>) session.getAttribute("cart");
+
+    if (cart == null) {
+        cart = new HashMap<>();
+    }
+
+    cart.put(id, selectedSeats.getSeats());
+    session.setAttribute("cart", cart);
+
+    System.out.println("Cart actualitzat: " + cart);
+
+   
+     return "redirect:/screenings/seats/" + id;
+}
+
 
 
 }

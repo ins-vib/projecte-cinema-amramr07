@@ -1,14 +1,19 @@
-<form action="/client/reserve" method="post">
-    <div th:each="seat : ${seats}">
-        <label>
-            <input type="checkbox" name="seatIds" th:value="${seat.id}">
+<h3>Seients disponibles</h3>
+    <div class="seats">
+        <form 
+            th:action="@{/screenings/seats/confirm/{id}(id=${screening.id})}"
+            th:object="${selectedSeats}" method="post">
             
-            Fila: <span th:text="${seat.seatRow}"></span>
-            Asiento: <span th:text="${seat.seatNumber}"></span>
-        </label>
-        <br>
+            <label th:each="seat : ${screening.room.seats}">
+                <input type="checkbox"
+                       th:id="'seat-' + ${seat.id}"
+                       th:field="*{seats}"
+                       th:value="${seat.id}"
+                       class="seat-checkbox"/>
+                <span th:text="${seat.id}"></span>
+            </label>
+            
+            <input type="submit" value="Confirmar selecció" class="btn"/>
+        </form>
     </div>
-
-    <input type="hidden" name="screeningId" th:value="${screening.id}">
-    <button type="submit">Reservar Asientos</button>
-</form>
+</div>
