@@ -2,6 +2,7 @@ package com.daw.CinemaDaw.controller;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,12 +19,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.daw.CinemaDaw.DTO.SeatsListDTO;
 import com.daw.CinemaDaw.domain.cinema.Movie;
+import com.daw.CinemaDaw.domain.cinema.Seat;
 import com.daw.CinemaDaw.domain.movie.New;
 import com.daw.CinemaDaw.domain.movie.Screening;
 import com.daw.CinemaDaw.domain.user.Role;
 import com.daw.CinemaDaw.domain.user.User;
 import com.daw.CinemaDaw.repository.MovieRepository;
 import com.daw.CinemaDaw.repository.ScreeningRepository;
+import com.daw.CinemaDaw.repository.TicketRepository;
 import com.daw.CinemaDaw.repository.UserRepository;
 import com.daw.CinemaDaw.service.NewsService;
 
@@ -39,18 +42,18 @@ public class HomeController {
     private ScreeningRepository screeningRepository;
    
 
-   
+   private TicketRepository ticketRepository;
 
-   
-
-    public HomeController(NewsService newsService, UserRepository userRepository, BCryptPasswordEncoder encoder,
-            MovieRepository movieRepository, ScreeningRepository screeningRepository) {
-        this.newsService = newsService;
-        this.userRepository = userRepository;
-        this.encoder = encoder;
-        this.movieRepository = movieRepository;
-        this.screeningRepository = screeningRepository;
-    }
+public HomeController(NewsService newsService, UserRepository userRepository, 
+                      BCryptPasswordEncoder encoder, MovieRepository movieRepository, 
+                      ScreeningRepository screeningRepository, TicketRepository ticketRepository) {
+    this.newsService = newsService;
+    this.userRepository = userRepository;
+    this.encoder = encoder;
+    this.movieRepository = movieRepository;
+    this.screeningRepository = screeningRepository;
+    this.ticketRepository = ticketRepository;  
+}
 
     @GetMapping("/login")
     public String login() {
@@ -155,11 +158,22 @@ public String selectSeats(@PathVariable Long id, Model model, HttpSession sessio
     if (cart == null) {
         cart = new HashMap<>();
     }
+    screening.get().getRoom().getSeats().sort(
+    Comparator.comparingInt(Seat::getSeatRow)
+              .thenComparingInt(Seat::getSeatNumber)
+);
 
     SeatsListDTO seatsListDTO = new SeatsListDTO();
     seatsListDTO.setSeats(cart.get(id));
     model.addAttribute("selectedSeats", seatsListDTO);
     model.addAttribute("screening", screening.get());
+
+   
+List<Long> takenSeatIds = ticketRepository.findByScreeningId(id)
+        .stream()
+        .map(t -> t.getSeat().getId())
+        .toList();
+model.addAttribute("takenSeatIds", takenSeatIds);
 
     return "client/screening-detail";
 }

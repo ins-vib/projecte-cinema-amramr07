@@ -93,6 +93,15 @@ public String viewMovie(@PathVariable Long id, Model model) {
     return "redirect:/movies";
 }
 
+@PostMapping("/movies/delete/{id}")
+public String deleteMovie(@PathVariable Long id) {
+    Optional<Movie> optionalMovie = movieRepository.findById(id);
+    if (optionalMovie.isPresent()) {
+        movieRepository.deleteById(id);
+    }
+    return "redirect:/movies";
+}
+
 }
 
 

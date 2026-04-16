@@ -1,19 +1,22 @@
 <h3>Seients disponibles</h3>
-    <div class="seats">
-        <form 
-            th:action="@{/screenings/seats/confirm/{id}(id=${screening.id})}"
-            th:object="${selectedSeats}" method="post">
-            
-            <label th:each="seat : ${screening.room.seats}">
+<div class="seats">
+    <form th:action="@{/screenings/seats/confirm/{id}(id=${screening.id})}"
+          th:object="${selectedSeats}" method="post">
+        <div th:each="seat : ${screening.room.seats}">
+            <br th:if="${seatStat.index > 0 and seat.seatRow != screening.room.seats[seatStat.index - 1].seatRow}"/>
+            <label>
                 <input type="checkbox"
                        th:id="'seat-' + ${seat.id}"
                        th:field="*{seats}"
                        th:value="${seat.id}"
+                       th:disabled="${takenSeatIds.contains(seat.id)}"
                        class="seat-checkbox"/>
-                <span th:text="${seat.id}"></span>
+                <span th:text="${seat.seatNumber}"></span>
             </label>
-            
-            <input type="submit" value="Confirmar selecció" class="btn"/>
-        </form>
-    </div>
+        </div>
+        <input type="submit" value="Confirmar selecció" class="btn"/>
+    </form>
+    <a th:href="@{/order/checkout}">
+        <button type="button">🛒 Finalitzar compra</button>
+    </a>
 </div>

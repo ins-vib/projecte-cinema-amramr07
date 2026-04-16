@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Checkout</title></head>
+<body>
+
+<h1>Resum de la comanda</h1>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Pel·lícula</th><th>Cinema</th><th>Sala</th>
+            <th>Data</th><th>Fila</th><th>Seient</th><th>Preu</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="line : ${lines}">
+            <td th:text="${line.movieTitle}"></td>
+            <td th:text="${line.cinemaName}"></td>
+            <td th:text="${line.roomName}"></td>
+            <td th:text="${line.screeningDateTime}"></td>
+            <td th:text="${line.seatRow}"></td>
+            <td th:text="${line.seatNumber}"></td>
+            <td th:text="${line.price} + ' €'"></td>
+        </tr>
+    </tbody>
+</table>
+
+<p><strong>Total: </strong><span th:text="${total}"></span> €</p>
+
+<form th:action="@{/order/confirm}" th:object="${checkoutDTO}" method="post">
+    <div>
+        <label>Nom:</label>
+        <input type="text" th:field="*{clientName}" />
+        <span th:if="${#fields.hasErrors('clientName')}" th:errors="*{clientName}" style="color:red"></span>
+    </div>
+    <div>
+        <label>Correu:</label>
+        <input type="email" th:field="*{clientEmail}" />
+        <span th:if="${#fields.hasErrors('clientEmail')}" th:errors="*{clientEmail}" style="color:red"></span>
+    </div>
+    <button type="submit">Confirmar comanda</button>
+</form>
+
+<a href="/client">Cancel·lar</a>
+</body>
+</html>

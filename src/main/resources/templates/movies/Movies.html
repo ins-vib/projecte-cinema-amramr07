@@ -1,47 +1,40 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    
-
 <body>
-
 <div th:replace="~{layout :: layout(~{::content})}">
-
 <div th:fragment="content">
-
 <h1>Llista de Pel·lícules</h1>
-
 <a th:href="@{/movies/create}">Crear pel·lícula</a>
-
 <br><br>
-
 <table border="1">
-    <tr>
-        <th>Title</th>
-        <th>Duration</th>
-        <th>Genre</th>
-        <th>Release Date</th>
-        <th>Actions</th>
-    </tr>
-
-    <tr th:each="movie : ${movies}">
-        <td th:text="${movie.title}"></td>
-        <td th:text="${movie.duration}"></td>
-        <td th:text="${movie.genre}"></td>
-        <td th:text="${movie.releaseDate}"></td>
-        <td>
-            <a th:href="@{/movies/{id}(id=${movie.id})}">View</a>
-            <a th:href="@{/movies/edit/{id}(id=${movie.id})}">Edit</a>
-        </td>
-    </tr>
+<tr>
+<th>Title</th>
+<th>Duration</th>
+<th>Genre</th>
+<th>Release Date</th>
+<th>Actions</th>
+</tr>
+<tr th:each="movie : ${movies}">
+<td th:text="${movie.title}"></td>
+<td th:text="${movie.duration}"></td>
+<td th:text="${movie.genre}"></td>
+<td th:text="${movie.releaseDate}"></td>
+<td>
+    <a th:href="@{/movies/{id}(id=${movie.id})}">View</a>
+    <a th:href="@{/movies/edit/{id}(id=${movie.id})}">Edit</a>
+    <a href="#"
+       th:onclick="|event.preventDefault(); if(confirm('Segur que vols esborrar?')) document.getElementById('del-' + ${movie.id}).submit();|">Delete</a>
+    <form th:id="'del-' + ${movie.id}"
+          th:action="@{/movies/delete/{id}(id=${movie.id})}"
+          method="post"
+          style="display:none;">
+    </form>
+</td>
+</tr>
 </table>
-
 <br>
-
 <a th:href="@{/}">Tornar</a>
-
 </div>
-
 </div>
-
 </body>
 </html>
