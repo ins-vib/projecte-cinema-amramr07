@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout :: layout(~{::content})}">
+    <div th:fragment="content">
+        <h1>Llistat de comandes</h1>
+
+        <p th:if="${#lists.isEmpty(orders)}">Encara no hi ha cap comanda registrada.</p>
+
+        <table th:if="${not #lists.isEmpty(orders)}" border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Client</th>
+                    <th>Email</th>
+                    <th>Data</th>
+                    <th>Total</th>
+                    <th>Estat</th>
+                    <th>Entrades</th>
+                    <th>Accions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="order : ${orders}">
+                    <td th:text="${order.id}"></td>
+                    <td th:text="${order.clientName}"></td>
+                    <td th:text="${order.clientEmail}"></td>
+                    <td th:text="${order.orderDateTime != null ? #temporals.format(order.orderDateTime, 'dd/MM/yyyy HH:mm') : '-'}"></td>
+                    <td th:text="${#numbers.formatDecimal(order.totalAmount, 1, 2)} + ' €'"></td>
+                    <td th:text="${order.status}"></td>
+                    <td th:text="${#lists.size(order.tickets)}"></td>
+                    <td>
+                        <a th:href="@{/admin/orders/{id}(id=${order.id})}">Veure detall</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <br>
+        <a th:href="@{/home}">Tornar al panell</a>
+    </div>
+</div>
+</body>
+</html>

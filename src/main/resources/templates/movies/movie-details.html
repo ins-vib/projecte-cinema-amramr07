@@ -15,6 +15,9 @@
 
     <h2>Screenings</h2>
 
+    <p th:if="${screeningMessage}" th:text="${screeningMessage}" style="color:green;"></p>
+    <p th:if="${screeningError}" th:text="${screeningError}" style="color:red;"></p>
+
     <a th:href="@{/screening/create(movieId=${movie.id})}"> Nova Sessió</a>
 
     <br><br>
@@ -42,8 +45,9 @@
                 <td>
                     <a th:href="@{/screening/edit/{id}(id=${s.id})}">Editar</a>
                     &nbsp;
-                    <a th:href="@{/screening/delete/{id}(id=${s.id})}"
-                       onclick="return confirm('Segur que vols esborrar aquesta sessió?')">Esborrar</a>
+                    <form th:action="@{/screening/delete/{id}(id=${s.id})}" method="post" style="display:inline;">
+                        <button type="submit" onclick="return confirm('Segur que vols esborrar aquesta sessió?')">Esborrar</button>
+                    </form>
                 </td>
             </tr>
         </tbody>

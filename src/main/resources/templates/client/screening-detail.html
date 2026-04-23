@@ -1,22 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout-client :: layout(~{::content})}">
+<div th:fragment="content">
+
+<style>
+    .screening-seat-map {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(72px, 72px));
+        gap: 1rem 0.8rem;
+        align-items: end;
+        justify-content: start;
+        margin: 1.5rem 0;
+    }
+
+    .seat-row-label {
+        grid-column: 1 / -1;
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--ocean-foam);
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--border-ocean);
+    }
+
+    .screening-seat-item {
+        text-align: center;
+    }
+
+    .screening-seat-input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .screening-seat-label {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.35rem;
+        cursor: pointer;
+    }
+
+    .screening-seat-label .seat {
+        width: 52px;
+        height: 52px;
+    }
+
+    .screening-seat-number {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+    }
+
+    .screening-seat-input:checked + .screening-seat-label .seat {
+        color: #38b000;
+        filter: drop-shadow(0 0 14px rgba(56,176,0,0.75)) drop-shadow(0 6px 16px rgba(0,0,0,0.6));
+    }
+
+    .screening-seat-input:disabled + .screening-seat-label {
+        cursor: not-allowed;
+        opacity: 0.45;
+    }
+
+    .screening-seat-input:disabled + .screening-seat-label .seat {
+        color: var(--danger-bright);
+        filter: drop-shadow(0 0 10px rgba(230,57,70,0.55)) drop-shadow(0 4px 12px rgba(0,0,0,0.45));
+    }
+
+    .screening-seat-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin: 1rem 0 1.5rem;
+    }
+
+    .screening-seat-legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+    }
+
+    .screening-seat-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 9999px;
+        display: inline-block;
+    }
+
+    .screening-seat-dot.available { background: var(--ocean-primary); }
+    .screening-seat-dot.selected { background: #38b000; }
+    .screening-seat-dot.taken { background: var(--danger-bright); }
+</style>
+
+<h1 th:text="${screening.movie.title}"></h1>
+<p>
+    <strong>Cinema:</strong> <span th:text="${screening.room.cinema.name}"></span> |
+    <strong>Sala:</strong> <span th:text="${screening.room.name}"></span> |
+    <strong>Sessió:</strong> <span th:text="${#temporals.format(screening.screeningDateTime, 'dd/MM/yyyy HH:mm')}"></span>
+</p>
+
 <h3>Seients disponibles</h3>
+<p th:if="${seatMessage}" th:text="${seatMessage}" style="color: green;"></p>
+<div class="screening-seat-legend">
+    <span><i class="screening-seat-dot available"></i> Disponible</span>
+    <span><i class="screening-seat-dot selected"></i> Seleccionat</span>
+    <span><i class="screening-seat-dot taken"></i> Ocupat</span>
+</div>
 <div class="seats">
     <form th:action="@{/screenings/seats/confirm/{id}(id=${screening.id})}"
           th:object="${selectedSeats}" method="post">
-        <div th:each="seat : ${screening.room.seats}">
-            <br th:if="${seatStat.index > 0 and seat.seatRow != screening.room.seats[seatStat.index - 1].seatRow}"/>
-            <label>
-                <input type="checkbox"
-                       th:id="'seat-' + ${seat.id}"
-                       th:field="*{seats}"
-                       th:value="${seat.id}"
-                       th:disabled="${takenSeatIds.contains(seat.id)}"
-                       class="seat-checkbox"/>
-                <span th:text="${seat.seatNumber}"></span>
-            </label>
+        <div class="screening-seat-map">
+            <th:block th:each="seat, seatStat : ${screening.room.seats}">
+                <div class="seat-row-label"
+                     th:if="${seatStat.index == 0 or seat.seatRow != screening.room.seats[seatStat.index - 1].seatRow}"
+                     th:text="'Fila ' + ${seat.seatRow}">
+                </div>
+                <div class="screening-seat-item">
+                    <input type="checkbox"
+                           th:id="'seat-' + ${seat.id}"
+                           th:field="*{seats}"
+                           th:value="${seat.id}"
+                           th:disabled="${takenSeatIds.contains(seat.id)}"
+                           class="screening-seat-input"/>
+                    <label th:for="'seat-' + ${seat.id}" class="screening-seat-label">
+                        <svg class="seat" th:classappend="${seat.type}" viewBox="0 0 491.5 491.5" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M449.149,216.2v-99c0-64.7-53.4-117.2-119.1-117.2h-168.4
+                                     c-65.6,0-119.1,52.6-119.1,117.2v99
+                                     c-25,12.1-42.5,37.5-42.5,67.1v208.2h163.8V471h163.8v20.5h163.8V283.3
+                                     C491.649,253.7,474.149,228.2,449.149,216.2z
+                                     M122.949,307.2v41v102.4h-81.9V283.3
+                                     c0-16,11.2-29.4,26.2-32.8h0.2
+                                     c2.6-0.6,5-0.9,7.3-0.9h14.4
+                                     c18.6,0,33.8,15.1,33.8,33.8V307.2z
+                                     M327.749,348.1h-163.8v-41h163.8V348.1z
+                                     M368.749,450.5V348.1v-41v-23.9
+                                     c0-18.6,15.1-33.8,33.8-33.8h14.3
+                                     c2.3,0,4.7,0.3,7.3,0.9h0.2
+                                     c15,3.4,26.2,16.8,26.2,32.8v167.4H368.749z"
+                                  fill="currentColor"/>
+                        </svg>
+                        <span class="screening-seat-number"
+                              th:text="${seat.seatRow} + '-' + ${seat.seatNumber}">
+                        </span>
+                    </label>
+                </div>
+            </th:block>
         </div>
         <input type="submit" value="Confirmar selecció" class="btn"/>
     </form>
-    <a th:href="@{/order/checkout}">
+    <p><a th:href="@{/client/order/checkout}">Veure carret i pagar</a></p>
+    <a th:href="@{/client/order/checkout}">
         <button type="button">🛒 Finalitzar compra</button>
     </a>
 </div>
+
+</div>
+</div>
+</body>
+</html>

@@ -1,11 +1,13 @@
 package com.daw.CinemaDaw.service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.daw.CinemaDaw.DTO.CheckoutDTO;
@@ -19,8 +21,12 @@ import com.daw.CinemaDaw.repository.ScreeningRepository;
 import com.daw.CinemaDaw.repository.SeatRepository;
 import com.daw.CinemaDaw.repository.TicketRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class TicketService {
+
+    private static final DateTimeFormatter SCREENING_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private final ScreeningRepository screeningRepository;
     private final SeatRepository seatRepository;
@@ -37,8 +43,13 @@ public class TicketService {
         this.orderRepository = orderRepository;
     }
 
+    @Transactional
     public Order createOrderFromCart(Map<Long, List<Long>> cart, CheckoutDTO checkoutDTO) {
-        // Creem la nova ordre a partir del DTO
+        List<String> conflicts = findUnavailableSeats(cart);
+        if (!conflicts.isEmpty()) {
+            throw new SeatUnavailableException(conflicts);
+        }
+
         Order order = new Order();
         order.setOrderDateTime(LocalDateTime.now());
         order.setClientName(checkoutDTO.getClientName());
@@ -58,9 +69,6 @@ public class TicketService {
             Screening screening = optScreening.get();
 
             for (Long seatId : seatIds) {
-                // Evitem duplicats: si ja existeix ticket per aquesta sessió i seient, saltem
-                if (ticketRepository.existsByScreeningIdAndSeatId(screeningId, seatId)) continue;
-
                 Optional<Seat> optSeat = seatRepository.findById(seatId);
                 if (optSeat.isEmpty()) continue;
 
@@ -78,6 +86,51 @@ public class TicketService {
 
         order.setTotalAmount(total);
         order.setTickets(tickets);
-        return orderRepository.save(order);
+        try {
+            return orderRepository.saveAndFlush(order);
+        } catch (DataIntegrityViolationException ex) {
+            throw new SeatUnavailableException(
+                List.of("Alguns seients s'acaben de vendre mentre confirmaves la compra. Torna a seleccionar-los.")
+            );
+        }
+    }
+
+    public List<String> findUnavailableSeats(Map<Long, List<Long>> cart) {
+        List<String> conflicts = new ArrayList<>();
+
+        if (cart == null || cart.isEmpty()) {
+            return conflicts;
+        }
+
+        for (Map.Entry<Long, List<Long>> entry : cart.entrySet()) {
+            Long screeningId = entry.getKey();
+            List<Long> seatIds = entry.getValue();
+            if (seatIds == null || seatIds.isEmpty()) continue;
+
+            Optional<Screening> optScreening = screeningRepository.findById(screeningId);
+            if (optScreening.isEmpty()) continue;
+            Screening screening = optScreening.get();
+
+            for (Long seatId : seatIds) {
+                if (!ticketRepository.existsByScreeningIdAndSeatId(screeningId, seatId)) continue;
+
+                Optional<Seat> optSeat = seatRepository.findById(seatId);
+                if (optSeat.isEmpty()) continue;
+
+                conflicts.add(formatSeatConflict(screening, optSeat.get()));
+            }
+        }
+
+        return conflicts;
+    }
+
+    private String formatSeatConflict(Screening screening, Seat seat) {
+        return screening.getMovie().getTitle()
+            + " | "
+            + screening.getScreeningDateTime().format(SCREENING_FORMATTER)
+            + " | fila "
+            + seat.getSeatRow()
+            + " seient "
+            + seat.getSeatNumber();
     }
 }

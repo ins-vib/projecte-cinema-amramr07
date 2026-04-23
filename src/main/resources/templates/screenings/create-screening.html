@@ -4,11 +4,13 @@
 <div th:replace="~{layout :: layout(~{::content})}">
 <div th:fragment="content">
 <h1>Nova Sessió per <span th:text="${movie.title}"></span></h1>
-<form th:action="@{/screening/create}" method="post">
+<p th:if="${screeningError}" th:text="${screeningError}" style="color:red;"></p>
+<form th:action="@{/screening/create}" th:object="${screening}" method="post">
     <input type="hidden" name="movieId" th:value="${movie.id}">
     <div>
         <label>Data i Hora:</label>
-        <input type="datetime-local" name="screeningDateTime" />
+        <input type="datetime-local" th:field="*{screeningDateTime}" />
+        <div th:if="${#fields.hasErrors('screeningDateTime')}" th:errors="*{screeningDateTime}" style="color:red;"></div>
         <br>
     </div>
     <div>
@@ -17,14 +19,17 @@
             <option value="" disabled selected>-- Selecciona una sala --</option>
             <option th:each="room : ${rooms}"
                     th:value="${room.id}"
+                    th:selected="${screening.room != null and room.id == screening.room.id}"
                     th:text="${room.cinema.name} + ' — ' + ${room.name}">
             </option>
         </select>
+        <div th:if="${roomError}" th:text="${roomError}" style="color:red;"></div>
         <br>
     </div>
     <div>
         <label>Preu (€):</label>
-        <input type="number" step="0.01" min="0" name="price" />
+        <input type="number" step="0.01" min="0.01" th:field="*{price}" />
+        <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}" style="color:red;"></div>
         <br>
     </div>
     <br>

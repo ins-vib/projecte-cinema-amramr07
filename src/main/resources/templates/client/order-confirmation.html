@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout-client :: layout(~{::content})}">
+<div th:fragment="content">
+
+
+<h1>Compra confirmada</h1>
+
+<p>
+    Comanda <strong th:text="${order.id}"></strong> confirmada per
+    <span th:text="${order.clientName}"></span> (<span th:text="${order.clientEmail}"></span>)
+</p>
+
+<p>
+    Data de compra:
+    <span th:text="${#temporals.format(order.orderDateTime, 'dd/MM/yyyy HH:mm')}"></span>
+</p>
+
+<p><strong>Total pagat:</strong> <span th:text="${order.totalAmount}"></span> €</p>
+
+<h2>Tickets generats</h2>
+
+<div style="display:grid; gap:1.5rem;">
+    <section th:each="ticket : ${order.tickets}"
+             style="border:2px dashed #48CAE4; border-radius:18px; padding:1.5rem; background:rgba(8,57,104,0.25); box-shadow:0 8px 24px rgba(0,0,0,0.25);">
+
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; margin-bottom:1rem;">
+            <div>
+                <h3 style="margin-bottom:0.25rem;" th:text="${ticket.screening.movie.title}"></h3>
+                <p style="margin:0;">Ticket <strong th:text="${ticket.id}"></strong></p>
+            </div>
+            <div style="text-align:right;">
+                <p style="margin:0;"><strong>Preu:</strong> <span th:text="${ticket.price}"></span> €</p>
+                <p style="margin:0;"><strong>Comanda:</strong> <span th:text="${order.id}"></span></p>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:0.75rem 1.5rem;">
+            <p style="margin:0;"><strong>Cinema:</strong> <span th:text="${ticket.screening.room.cinema.name}"></span></p>
+            <p style="margin:0;"><strong>Sala:</strong> <span th:text="${ticket.screening.room.name}"></span></p>
+            <p style="margin:0;"><strong>Sessió:</strong> <span th:text="${#temporals.format(ticket.screening.screeningDateTime, 'dd/MM/yyyy HH:mm')}"></span></p>
+            <p style="margin:0;"><strong>Fila:</strong> <span th:text="${ticket.seat.seatRow}"></span></p>
+            <p style="margin:0;"><strong>Seient:</strong> <span th:text="${ticket.seat.seatNumber}"></span></p>
+            <p style="margin:0;"><strong>Client:</strong> <span th:text="${order.clientName}"></span></p>
+        </div>
+    </section>
+</div>
+
+<br>
+<a th:href="@{/client}">Tornar al catàleg</a>
+
+</div>
+</div>
+</body>
+</html>

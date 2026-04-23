@@ -1,18 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout-client :: layout(~{::content})}">
+<div th:fragment="content">
+
+<h1 th:text="${movie.title}"></h1>
+
+<div th:if="${#lists.isEmpty(screenings)}">
+    <p>No hi ha sessions disponibles per aquesta pel·lícula.</p>
+</div>
+
 <div th:each="s : ${screenings}">
     <a th:href="@{/screenings/seats/{id}(id=${s.id})}">
         <p>
-            🎬 Cine: 
+            Cine:
             <span th:text="${s.room.cinema.name}"></span> |
-            
-            🪑 Sala: 
+            Sala:
             <span th:text="${s.room.name}"></span> |
-            
-            📅 Fecha: 
-            <span th:text="${s.screeningDateTime}"></span> |
-            
-            💶 Precio: 
+            Fecha:
+            <span th:text="${#temporals.format(s.screeningDateTime, 'dd/MM/yyyy HH:mm')}"></span> |
+            Precio:
             <span th:text="${s.price}"></span> €
         </p>
     </a>
 </div>
+
 <a href="/client">Volver</a>
+
+</div>
+</div>
+</body>
+</html>

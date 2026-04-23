@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.daw.CinemaDaw.DTO.SeatsListDTO;
 import com.daw.CinemaDaw.domain.cinema.Movie;
@@ -179,21 +180,37 @@ model.addAttribute("takenSeatIds", takenSeatIds);
 }
 
 @PostMapping("/screenings/seats/confirm/{id}")
-public String confirmSeats(@PathVariable Long id, @ModelAttribute("selectedSeats") SeatsListDTO selectedSeats, Model model, HttpSession session) {
-
-    System.out.println("Seient seleccionats per a l'escreening " + id + ": " + selectedSeats.getSeats());
-
-    // Obtenir mapa de la sessió o crear-lo
+public String confirmSeats(@PathVariable Long id,
+                           @ModelAttribute("selectedSeats") SeatsListDTO selectedSeats,
+                           HttpSession session,
+                           RedirectAttributes redirectAttributes) {
     Map<Long, List<Long>> cart = (Map<Long, List<Long>>) session.getAttribute("cart");
 
     if (cart == null) {
         cart = new HashMap<>();
     }
 
-    cart.put(id, selectedSeats.getSeats());
-    session.setAttribute("cart", cart);
+    List<Long> seats = selectedSeats.getSeats() == null ? new ArrayList<>() : new ArrayList<>(selectedSeats.getSeats());
+    List<Long> takenSeatIds = ticketRepository.findByScreeningId(id)
+            .stream()
+            .map(t -> t.getSeat().getId())
+            .toList();
 
-    System.out.println("Cart actualitzat: " + cart);
+    seats.removeIf(takenSeatIds::contains);
+
+    if (seats.isEmpty()) {
+        cart.remove(id);
+        redirectAttributes.addFlashAttribute("seatMessage", "No s'ha afegit cap seient al carret per aquesta sessió.");
+    } else {
+        cart.put(id, seats);
+        redirectAttributes.addFlashAttribute("seatMessage", "Entrades afegides al carret. Cada seient es pagarà com un ticket independent.");
+    }
+
+    if (cart.isEmpty()) {
+        session.removeAttribute("cart");
+    } else {
+        session.setAttribute("cart", cart);
+    }
 
    
      return "redirect:/screenings/seats/" + id;

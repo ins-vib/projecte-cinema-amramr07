@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:replace="~{layout-client :: layout(~{::content})}">
+<div th:fragment="content">
+
 <h1>Pel·lícules disponibles</h1>
 
 <div th:each="movie : ${movies}">
@@ -6,4 +12,7 @@
     </a>
 </div>
 
-<a href="/logout">Logout</a>
+</div>
+</div>
+</body>
+</html>

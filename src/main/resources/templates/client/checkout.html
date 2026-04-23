@@ -1,15 +1,26 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>Checkout</title></head>
 <body>
+<div th:replace="~{layout-client :: layout(~{::content})}">
+<div th:fragment="content">
 
 <h1>Resum de la comanda</h1>
+
+<p th:if="${cartMessage}" th:text="${cartMessage}" style="color: green;"></p>
+
+<div th:if="${cartErrors != null and !#lists.isEmpty(cartErrors)}" style="color: red;">
+    <p>No s'ha pogut completar la compra perquè alguns seients ja no estan disponibles:</p>
+    <ul>
+        <li th:each="error : ${cartErrors}" th:text="${error}"></li>
+    </ul>
+    <p>Torna a seleccionar els seients abans de confirmar de nou.</p>
+</div>
 
 <table border="1">
     <thead>
         <tr>
             <th>Pel·lícula</th><th>Cinema</th><th>Sala</th>
-            <th>Data</th><th>Fila</th><th>Seient</th><th>Preu</th>
+            <th>Data</th><th>Fila</th><th>Seient</th><th>Preu</th><th>Acció</th>
         </tr>
     </thead>
     <tbody>
@@ -17,17 +28,24 @@
             <td th:text="${line.movieTitle}"></td>
             <td th:text="${line.cinemaName}"></td>
             <td th:text="${line.roomName}"></td>
-            <td th:text="${line.screeningDateTime}"></td>
+            <td th:text="${#temporals.format(line.screeningDateTime, 'dd/MM/yyyy HH:mm')}"></td>
             <td th:text="${line.seatRow}"></td>
             <td th:text="${line.seatNumber}"></td>
             <td th:text="${line.price} + ' €'"></td>
+            <td>
+                <form th:action="@{/client/order/cart/remove}" method="post">
+                    <input type="hidden" name="screeningId" th:value="${line.screeningId}" />
+                    <input type="hidden" name="seatId" th:value="${line.seatId}" />
+                    <button type="submit">Eliminar</button>
+                </form>
+            </td>
         </tr>
     </tbody>
 </table>
 
 <p><strong>Total: </strong><span th:text="${total}"></span> €</p>
 
-<form th:action="@{/order/confirm}" th:object="${checkoutDTO}" method="post">
+<form th:action="@{/client/order/confirm}" th:object="${checkoutDTO}" method="post">
     <div>
         <label>Nom:</label>
         <input type="text" th:field="*{clientName}" />
@@ -41,6 +59,13 @@
     <button type="submit">Confirmar comanda</button>
 </form>
 
+<form th:action="@{/client/order/cart/clear}" method="post">
+    <button type="submit">Buidar carret</button>
+</form>
+
 <a href="/client">Cancel·lar</a>
+
+</div>
+</div>
 </body>
 </html>
