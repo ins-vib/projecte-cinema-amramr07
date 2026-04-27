@@ -4,34 +4,34 @@
 
 <body>
 
-<div th:replace="~{layout :: layout(~{::content})}">
+<div th:replace="~{layout-admin :: layout(~{::content})}">
 
 <div th:fragment="content">
 
-<h1>Afegir Nova Sala a <span th:text="${cinema.name}"></span></h1>
+<h1>Add New Room to <span th:text="${cinema.name}"></span></h1>
 
 <form th:action="@{/room/create}" th:object="${room}" method="post">
 
 <input type="hidden" name="cinemaId" th:value="${cinema.id}">
 
 <div>
-<label>Nom:</label>
+<label>Name:</label>
 <input type="text" th:field="*{name}" />
 <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:red;"></p>
 <br>
 </div>
 
 <div>
-<label>Capacitat:</label>
+<label>Capacity:</label>
 <input type="number" th:field="*{capacity}" />
 <p th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}" style="color:red;"></p>
 <br>
 </div>
 
-<button type="submit">Guardar</button>
+<button type="submit">Save</button>
 
 <a th:href="@{/cinema/{id}(id=${cinema.id})}">
-Tornar enrere
+Back
 </a>
 
 </form>

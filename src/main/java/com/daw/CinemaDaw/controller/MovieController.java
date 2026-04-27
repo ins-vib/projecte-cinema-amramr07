@@ -44,7 +44,11 @@ public String mostrarFormulariCrear(Model model) {
 }
 
 @PostMapping("/movies/create")
-public String guardarMovie(@ModelAttribute Movie movie) {
+public String guardarMovie(@Valid @ModelAttribute Movie movie,
+                           BindingResult result) {
+    if (result.hasErrors()) {
+        return "movies/create-movie";
+    }
     movieRepository.save(movie);
     return "redirect:/movies"; 
 
@@ -104,5 +108,4 @@ public String deleteMovie(@PathVariable Long id) {
     return "redirect:/movies";
 }
 }
-
 

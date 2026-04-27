@@ -137,14 +137,14 @@ public class OrderController {
             }
         }
 
-        redirectAttributes.addFlashAttribute("cartMessage", "Entrada eliminada del carret.");
+        redirectAttributes.addFlashAttribute("cartMessage", "Ticket removed from the cart.");
         return "redirect:/client/order/checkout";
     }
 
     @PostMapping({"/client/order/cart/clear"})
     public String clearCart(HttpSession session, RedirectAttributes redirectAttributes) {
         session.removeAttribute("cart");
-        redirectAttributes.addFlashAttribute("cartMessage", "S'ha buidat el carret.");
+        redirectAttributes.addFlashAttribute("cartMessage", "The cart has been cleared.");
         return "redirect:/client";
     }
 
@@ -169,7 +169,7 @@ public class OrderController {
             if (order == null) {
                 redirectAttributes.addFlashAttribute(
                     "cartErrors",
-                    List.of("No s'ha pogut confirmar la compra perquè el carret no té entrades vàlides.")
+                    List.of("The purchase could not be confirmed because the cart has no valid tickets.")
                 );
                 return "redirect:/client/order/checkout";
             }

@@ -4,16 +4,16 @@
 
 <body>
 
-<div th:replace="~{layout :: layout(~{::content})}">
+<div th:replace="~{layout-admin :: layout(~{::content})}">
 
 <div th:fragment="content">
 
 <h1 th:text="${room.name}"></h1>
-<p>Capacitat: <span th:text="${room.capacity}"></span></p>
+<p>Capacity: <span th:text="${room.capacity}"></span></p>
 <p>Cinema: <span th:text="${room.cinema.name}"></span></p>
 
 <br>
-<a th:href="@{/cinema/{id}(id=${room.cinema.id})}">Tornar al cinema</a>
+<a th:href="@{/cinema/{id}(id=${room.cinema.id})}">Back to cinema</a>
 
 </div>
 

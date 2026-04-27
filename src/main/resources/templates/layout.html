@@ -28,7 +28,7 @@
         </div>
 
         <!-- Client: nombre + logout -->
-        <div sec:authorize="hasRole('CLIENT')">
+        <div sec:authorize="hasRole('CLIENT') and !hasRole('ADMIN')">
             <span sec:authentication="name"></span>
             &nbsp;
             <a href="/logout">Logout</a>
@@ -42,10 +42,11 @@
         <span sec:authorize="hasRole('ADMIN')">
             <a href="/movies">Movies</a>
             <a href="/cinemes">Cinemes</a>
+            <a href="/admin/orders">Comandes</a>
         </span>
 
-        <!-- Cliente solo ve sus películas -->
-        <span sec:authorize="hasRole('CLIENT')">
+        <!-- Cliente solo ve su apartado -->
+        <span sec:authorize="hasRole('CLIENT') ">
             <a href="/client">Apartat Client</a>
         </span>
     </nav>

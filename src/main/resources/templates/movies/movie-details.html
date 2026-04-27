@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:replace="~{layout :: layout(~{::content})}">
+<div th:replace="~{layout-admin :: layout(~{::content})}">
 <div th:fragment="content">
 
     <h1 th:text="${movie.title}"></h1>
@@ -45,8 +45,9 @@
                 <td>
                     <a th:href="@{/screening/edit/{id}(id=${s.id})}">Editar</a>
                     &nbsp;
-                    <form th:action="@{/screening/delete/{id}(id=${s.id})}" method="post" style="display:inline;">
-                        <button type="submit" onclick="return confirm('Segur que vols esborrar aquesta sessió?')">Esborrar</button>
+                    <form th:action="@{/screening/delete/{id}(id=${s.id})}" method="post" class="inline-action-form">
+                        <button type="submit" class="table-action-button delete-action-button"
+                                onclick="return confirm('Segur que vols esborrar aquesta sessió?')">Esborrar</button>
                     </form>
                 </td>
             </tr>

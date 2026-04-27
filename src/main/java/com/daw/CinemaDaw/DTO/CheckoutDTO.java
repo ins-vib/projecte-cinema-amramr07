@@ -5,11 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 
 public class CheckoutDTO {
 
-    @NotBlank(message = "El nom és obligatori")
+    @NotBlank(message = "Name is required")
     private String clientName;
 
-    @NotBlank(message = "El correu és obligatori")
-    @Email(message = "El correu no és vàlid")
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email is not valid")
     private String clientEmail;
 
     private String couponCode;

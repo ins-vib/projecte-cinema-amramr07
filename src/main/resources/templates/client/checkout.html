@@ -4,23 +4,23 @@
 <div th:replace="~{layout-client :: layout(~{::content})}">
 <div th:fragment="content">
 
-<h1>Resum de la comanda</h1>
+<h1>Order Summary</h1>
 
 <p th:if="${cartMessage}" th:text="${cartMessage}" style="color: green;"></p>
 
 <div th:if="${cartErrors != null and !#lists.isEmpty(cartErrors)}" style="color: red;">
-    <p>No s'ha pogut completar la compra perquè alguns seients ja no estan disponibles:</p>
+    <p>The purchase could not be completed because some seats are no longer available:</p>
     <ul>
         <li th:each="error : ${cartErrors}" th:text="${error}"></li>
     </ul>
-    <p>Torna a seleccionar els seients abans de confirmar de nou.</p>
+    <p>Please select your seats again before confirming.</p>
 </div>
 
 <table border="1">
     <thead>
         <tr>
-            <th>Pel·lícula</th><th>Cinema</th><th>Sala</th>
-            <th>Data</th><th>Fila</th><th>Seient</th><th>Preu</th><th>Acció</th>
+            <th>Movie</th><th>Cinema</th><th>Room</th>
+            <th>Date</th><th>Row</th><th>Seat</th><th>Price</th><th>Action</th>
         </tr>
     </thead>
     <tbody>
@@ -33,10 +33,10 @@
             <td th:text="${line.seatNumber}"></td>
             <td th:text="${line.price} + ' €'"></td>
             <td>
-                <form th:action="@{/client/order/cart/remove}" method="post">
+                <form th:action="@{/client/order/cart/remove}" method="post" class="inline-action-form">
                     <input type="hidden" name="screeningId" th:value="${line.screeningId}" />
                     <input type="hidden" name="seatId" th:value="${line.seatId}" />
-                    <button type="submit">Eliminar</button>
+                    <button type="submit" class="table-action-button delete-action-button">Remove</button>
                 </form>
             </td>
         </tr>
@@ -47,7 +47,7 @@
 
 <p><strong>Subtotal: </strong><span th:text="${#numbers.formatDecimal(summary.subtotal, 1, 2)}"></span> €</p>
 <p th:if="${summary.hasDiscount()}">
-    <strong>Descompte:</strong>
+    <strong>Discount:</strong>
     <span th:text="${#numbers.formatDecimal(summary.discountAmount, 1, 2)}"></span> €
     <span th:if="${summary.appliedCouponCode != null}" class="coupon-inline-code" th:text="${summary.appliedCouponCode}"></span>
 </p>
@@ -56,31 +56,31 @@
 
 <form th:action="@{/client/order/confirm}" th:object="${checkoutDTO}" method="post">
     <div>
-        <label>Nom:</label>
+        <label>Name:</label>
         <input type="text" th:field="*{clientName}" />
         <span th:if="${#fields.hasErrors('clientName')}" th:errors="*{clientName}" style="color:red"></span>
     </div>
     <div>
-        <label>Correu:</label>
+        <label>Email:</label>
         <input type="email" th:field="*{clientEmail}" />
         <span th:if="${#fields.hasErrors('clientEmail')}" th:errors="*{clientEmail}" style="color:red"></span>
     </div>
     <div>
-        <label>Cupó:</label>
+        <label>Coupon:</label>
         <input type="text" th:field="*{couponCode}" placeholder="CINEX5-XXXXXXXX" class="coupon-code-input" />
         <span th:if="${#fields.hasErrors('couponCode')}" th:errors="*{couponCode}" style="color:red"></span>
     </div>
     <p style="font-size:0.95rem;">
-        Si la compra arriba a 25,00 €, rebràs un cupó de 5,00 € per a la següent compra.
+        If your purchase reaches 25.00 €, you will receive a 5.00 € coupon for your next purchase.
     </p>
-    <button type="submit">Confirmar comanda</button>
+    <button type="submit">Confirm order</button>
 </form>
 
-<form th:action="@{/client/order/cart/clear}" method="post">
-    <button type="submit">Buidar carret</button>
+<form th:action="@{/client/order/cart/clear}" method="post" class="inline-secondary-form">
+    <button type="submit" class="secondary-action-button">Clear cart</button>
 </form>
 
-<a href="/client">Cancel·lar</a>
+<a href="/client">Cancel</a>
 
 </div>
 </div>

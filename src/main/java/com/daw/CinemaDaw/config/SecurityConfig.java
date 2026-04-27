@@ -20,7 +20,8 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/", "/landing", "/login", "/register", "/css/**", "/cookies/**").permitAll()
                 .requestMatchers("/admin/**", "/movies/**", "/admin/orders/**").hasRole("ADMIN")
-                .requestMatchers("/client/**", "/session/**", "/screenings/**", "/order/**").hasAnyRole("CLIENT", "ADMIN")
+                .requestMatchers("/client/**", "/screenings/**", "/order/**").hasRole("CLIENT")
+                .requestMatchers("/session/**").hasAnyRole("CLIENT", "ADMIN")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

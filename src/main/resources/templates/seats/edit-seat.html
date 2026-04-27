@@ -1,21 +1,21 @@
-<div th:replace="~{layout :: layout(~{::content})}">
+<div th:replace="~{layout-admin :: layout(~{::content})}">
 <div th:fragment="content">
 
-<h1>Editar Silla</h1>
+<h1>Edit Seat</h1>
 <form th:action="@{/seat/delete/{id}(id=${seat.id})}" method="post">
     <button type="submit"
-            onclick="return confirm('¿Seguro que quieres eliminar esta silla?')">
-        Eliminar
+            onclick="return confirm('Are you sure you want to delete this seat?')">
+        Delete
     </button>
 </form>
 
 <form th:action="@{/seat/edit}" th:object="${seat}" method="post">
     <input type="hidden" th:field="*{id}" />
     
-    <label>Fila:</label>
+    <label>Row:</label>
     <input type="number" th:field="*{seatRow}" /><br/>
 
-    <label>Número:</label>
+    <label>Number:</label>
     <input type="number" th:field="*{seatNumber}" /><br/>
 
     <label>PosX:</label>
@@ -24,7 +24,7 @@
     <label>PosY:</label>
     <input type="number" th:field="*{posY}" /><br/>
 
-    <label>Tipo:</label>
+    <label>Type:</label>
     <select th:field="*{type}">
         <option th:each="t : ${types}"
         th:value="${t}"
@@ -33,13 +33,13 @@
         </option>
     </select><br/>
 
-    <label>Activo:</label>
+    <label>Active:</label>
     <input type="checkbox" th:field="*{active}" /><br/><br/>
 
-    <button type="submit">Guardar</button>
+    <button type="submit">Save</button>
 </form>
 
-<a th:href="@{/room/{id}/seats(id=${seat.room.id})}">Tornar a la sala</a>
+<a th:href="@{/room/{id}/seats(id=${seat.room.id})}">Back to room</a>
 
 </div>
 </div>

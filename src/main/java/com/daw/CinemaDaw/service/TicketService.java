@@ -117,7 +117,7 @@ public class TicketService {
             return savedOrder;
         } catch (DataIntegrityViolationException ex) {
             throw new SeatUnavailableException(
-                List.of("Alguns seients s'acaben de vendre mentre confirmaves la compra. Torna a seleccionar-los.")
+                List.of("Some seats were sold while you were confirming your purchase. Please select them again.")
             );
         }
     }
@@ -189,9 +189,9 @@ public class TicketService {
         return screening.getMovie().getTitle()
             + " | "
             + screening.getScreeningDateTime().format(SCREENING_FORMATTER)
-            + " | fila "
+            + " | row "
             + seat.getSeatRow()
-            + " seient "
+            + " seat "
             + seat.getSeatNumber();
     }
 
@@ -239,9 +239,9 @@ public class TicketService {
         }
 
         public String getRewardDescription() {
-            return "A partir de " + String.format(Locale.US, "%.2f", CouponService.REWARD_THRESHOLD)
-                + " € regalem un cupó de " + String.format(Locale.US, "%.2f", CouponService.REWARD_DISCOUNT)
-                + " € per a la següent compra.";
+            return "Starting at " + String.format(Locale.US, "%.2f", CouponService.REWARD_THRESHOLD)
+                + " €, you receive a " + String.format(Locale.US, "%.2f", CouponService.REWARD_DISCOUNT)
+                + " € coupon for your next purchase.";
         }
     }
 }

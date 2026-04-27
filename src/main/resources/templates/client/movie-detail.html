@@ -14,39 +14,45 @@
              th:alt="${movie.title}">
         <div th:unless="${movie.posterUrl != null and !#strings.isEmpty(movie.posterUrl)}"
              class="client-movie-placeholder">
-            <span>Imagen</span>
+            <span>Image</span>
         </div>
     </div>
 
     <div class="client-movie-detail-info">
-        <p><strong>Gènere:</strong> <span th:text="${movie.genre}"></span></p>
-        <p><strong>Durada:</strong> <span th:text="${movie.duration}"></span> min</p>
+        <p><strong>Genre:</strong> <span th:text="${movie.genre}"></span></p>
+        <p><strong>Duration:</strong> <span th:text="${movie.duration}"></span> min</p>
         <p th:if="${movie.sinopsis != null and !#strings.isEmpty(movie.sinopsis)}">
-            <strong>Sinopsi:</strong> <span th:text="${movie.sinopsis}"></span>
+            <strong>Synopsis:</strong> <span th:text="${movie.sinopsis}"></span>
         </p>
     </div>
 </div>
 
 <div th:if="${#lists.isEmpty(screenings)}">
-    <p>No hi ha sessions disponibles per aquesta pel·lícula.</p>
+    <p>There are no available screenings for this movie.</p>
 </div>
 
-<div th:each="s : ${screenings}">
-    <a th:href="@{/screenings/seats/{id}(id=${s.id})}">
-        <p>
-            Cine:
-            <span th:text="${s.room.cinema.name}"></span> |
-            Sala:
-            <span th:text="${s.room.name}"></span> |
-            Fecha:
-            <span th:text="${#temporals.format(s.screeningDateTime, 'dd/MM/yyyy HH:mm')}"></span> |
-            Precio:
-            <span th:text="${s.price}"></span> €
-        </p>
+<div th:if="${not #lists.isEmpty(screenings)}" class="client-screening-grid">
+    <a th:each="s : ${screenings}"
+       th:href="@{/screenings/seats/{id}(id=${s.id})}"
+       class="client-screening-card">
+        <div class="client-screening-card-top">
+            <p class="client-screening-label">Cinema</p>
+            <h3 th:text="${s.room.cinema.name}"></h3>
+        </div>
+
+        <div class="client-screening-card-body">
+            <p><strong>Room:</strong> <span th:text="${s.room.name}"></span></p>
+            <p><strong>Date:</strong> <span th:text="${#temporals.format(s.screeningDateTime, 'dd/MM/yyyy HH:mm')}"></span></p>
+            <p><strong>Price:</strong> <span th:text="${#numbers.formatDecimal(s.price, 1, 2)}"></span> €</p>
+        </div>
+
+        <div class="client-screening-card-footer">
+            <span>Choose seats</span>
+        </div>
     </a>
 </div>
 
-<a href="/client">Volver</a>
+<a href="/client">Back</a>
 
 </div>
 </div>

@@ -1,43 +1,43 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:replace="~{layout :: layout(~{::content})}">
+<div th:replace="~{layout-admin :: layout(~{::content})}">
     <div th:fragment="content">
-        <h1>Detall de la comanda</h1>
+        <h1>Order Details</h1>
 
         <p><strong>ID:</strong> <span th:text="${order.id}"></span></p>
-        <p><strong>Client:</strong> <span th:text="${order.clientName}"></span></p>
+        <p><strong>Customer:</strong> <span th:text="${order.clientName}"></span></p>
         <p><strong>Email:</strong> <span th:text="${order.clientEmail}"></span></p>
         <p>
-            <strong>Data de compra:</strong>
+            <strong>Purchase date:</strong>
             <span th:text="${order.orderDateTime != null ? #temporals.format(order.orderDateTime, 'dd/MM/yyyy HH:mm') : '-'}"></span>
         </p>
-        <p><strong>Estat:</strong> <span th:text="${order.status}"></span></p>
+        <p><strong>Status:</strong> <span th:text="${order.status}"></span></p>
         <p><strong>Subtotal:</strong> <span th:text="${#numbers.formatDecimal(order.subtotalAmount, 1, 2)} + ' €'"></span></p>
-        <p><strong>Descompte:</strong> <span th:text="${#numbers.formatDecimal(order.discountAmount, 1, 2)} + ' €'"></span></p>
+        <p><strong>Discount:</strong> <span th:text="${#numbers.formatDecimal(order.discountAmount, 1, 2)} + ' €'"></span></p>
         <p><strong>Total:</strong> <span th:text="${#numbers.formatDecimal(order.totalAmount, 1, 2)} + ' €'"></span></p>
         <p th:if="${order.appliedCouponCode != null}">
-            <strong>Cupó aplicat:</strong> <span th:text="${order.appliedCouponCode}"></span>
+            <strong>Applied coupon:</strong> <span th:text="${order.appliedCouponCode}"></span>
         </p>
         <p th:if="${order.generatedCouponCode != null}">
-            <strong>Cupó generat:</strong> <span th:text="${order.generatedCouponCode}"></span>
+            <strong>Generated coupon:</strong> <span th:text="${order.generatedCouponCode}"></span>
         </p>
 
-        <h2>Entrades de la comanda</h2>
+        <h2>Order Tickets</h2>
 
-        <p th:if="${#lists.isEmpty(order.tickets)}">Aquesta comanda no té entrades associades.</p>
+        <p th:if="${#lists.isEmpty(order.tickets)}">This order has no associated tickets.</p>
 
         <table th:if="${not #lists.isEmpty(order.tickets)}" border="1">
             <thead>
                 <tr>
                     <th>Ticket</th>
-                    <th>Pel·lícula</th>
+                    <th>Movie</th>
                     <th>Cinema</th>
-                    <th>Sala</th>
-                    <th>Sessió</th>
-                    <th>Fila</th>
-                    <th>Seient</th>
-                    <th>Preu</th>
+                    <th>Room</th>
+                    <th>Screening</th>
+                    <th>Row</th>
+                    <th>Seat</th>
+                    <th>Price</th>
                 </tr>
             </thead>
             <tbody>
@@ -55,7 +55,7 @@
         </table>
 
         <br>
-        <a th:href="@{/admin/orders}">Tornar al llistat</a>
+        <a th:href="@{/admin/orders}">Back to list</a>
     </div>
 </div>
 </body>

@@ -31,20 +31,20 @@ public class CouponService {
         }
 
         Coupon coupon = couponRepository.findByCode(normalizedCode)
-            .orElseThrow(() -> new IllegalArgumentException("El cupó no existeix."));
+            .orElseThrow(() -> new IllegalArgumentException("The coupon does not exist."));
 
         if (coupon.isUsed()) {
-            throw new IllegalArgumentException("Aquest cupó ja s'ha utilitzat.");
+            throw new IllegalArgumentException("This coupon has already been used.");
         }
         if (coupon.getExpiryDate().isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Aquest cupó ha caducat.");
+            throw new IllegalArgumentException("This coupon has expired.");
         }
         if (!coupon.getAssignedEmail().equalsIgnoreCase(clientEmail)) {
-            throw new IllegalArgumentException("Aquest cupó està associat a un altre correu.");
+            throw new IllegalArgumentException("This coupon is linked to a different email.");
         }
         if (subtotalAmount < coupon.getMinOrderAmount()) {
             throw new IllegalArgumentException(
-                "Has d'arribar a " + formatAmount(coupon.getMinOrderAmount()) + " € per utilitzar aquest cupó."
+                "You must reach " + formatAmount(coupon.getMinOrderAmount()) + " € to use this coupon."
             );
         }
 

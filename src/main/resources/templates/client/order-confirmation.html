@@ -6,35 +6,35 @@
 
 <div class="coupon-page">
 
-<h1>Compra confirmada</h1>
+<h1>Purchase Confirmed</h1>
 
 <p>
-    Comanda <strong th:text="${order.id}"></strong> confirmada per
+    Order <strong th:text="${order.id}"></strong> confirmed for
     <span th:text="${order.clientName}"></span> (<span th:text="${order.clientEmail}"></span>)
 </p>
 
 <p>
-    Data de compra:
+    Purchase date:
     <span th:text="${#temporals.format(order.orderDateTime, 'dd/MM/yyyy HH:mm')}"></span>
 </p>
 
 <p><strong>Subtotal:</strong> <span th:text="${#numbers.formatDecimal(order.subtotalAmount, 1, 2)}"></span> €</p>
 <p th:if="${order.discountAmount > 0}">
-    <strong>Descompte aplicat:</strong>
+    <strong>Applied discount:</strong>
     <span th:text="${#numbers.formatDecimal(order.discountAmount, 1, 2)}"></span> €
     <span th:if="${order.appliedCouponCode != null}" class="coupon-inline-code" th:text="${order.appliedCouponCode}"></span>
 </p>
-<p><strong>Total pagat:</strong> <span th:text="${#numbers.formatDecimal(order.totalAmount, 1, 2)}"></span> €</p>
+<p><strong>Total paid:</strong> <span th:text="${#numbers.formatDecimal(order.totalAmount, 1, 2)}"></span> €</p>
 
 <div th:if="${order.generatedCouponCode != null}" class="coupon-reward-card">
-    <p class="coupon-reward-eyebrow">Promocio desbloquejada</p>
-    <h3>Has guanyat un cupo!</h3>
-    <p class="coupon-reward-copy">Guarda aquest codi per a la teva seguent compra.</p>
+    <p class="coupon-reward-eyebrow">Promotion unlocked</p>
+    <h3>You earned a coupon!</h3>
+    <p class="coupon-reward-copy">Save this code for your next purchase.</p>
     <div class="coupon-code-box" th:text="${order.generatedCouponCode}"></div>
-    <p class="coupon-reward-meta">Val 5,00 €, es d'un sol us, caduca en 30 dies i demana una compra minima de 20,00 €.</p>
+    <p class="coupon-reward-meta">Worth 5.00 €, single use, expires in 30 days, and requires a minimum purchase of 20.00 €.</p>
 </div>
 
-<h2>Tickets generats</h2>
+<h2>Generated Tickets</h2>
 
 <div style="display:grid; gap:1.5rem;">
     <section th:each="ticket : ${order.tickets}"
@@ -46,24 +46,24 @@
                 <p style="margin:0;">Ticket <strong th:text="${ticket.id}"></strong></p>
             </div>
             <div style="text-align:right;">
-                <p style="margin:0;"><strong>Preu:</strong> <span th:text="${ticket.price}"></span> €</p>
-                <p style="margin:0;"><strong>Comanda:</strong> <span th:text="${order.id}"></span></p>
+                <p style="margin:0;"><strong>Price:</strong> <span th:text="${ticket.price}"></span> €</p>
+                <p style="margin:0;"><strong>Order:</strong> <span th:text="${order.id}"></span></p>
             </div>
         </div>
 
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:0.75rem 1.5rem;">
             <p style="margin:0;"><strong>Cinema:</strong> <span th:text="${ticket.screening.room.cinema.name}"></span></p>
-            <p style="margin:0;"><strong>Sala:</strong> <span th:text="${ticket.screening.room.name}"></span></p>
-            <p style="margin:0;"><strong>Sessió:</strong> <span th:text="${#temporals.format(ticket.screening.screeningDateTime, 'dd/MM/yyyy HH:mm')}"></span></p>
-            <p style="margin:0;"><strong>Fila:</strong> <span th:text="${ticket.seat.seatRow}"></span></p>
-            <p style="margin:0;"><strong>Seient:</strong> <span th:text="${ticket.seat.seatNumber}"></span></p>
-            <p style="margin:0;"><strong>Client:</strong> <span th:text="${order.clientName}"></span></p>
+            <p style="margin:0;"><strong>Room:</strong> <span th:text="${ticket.screening.room.name}"></span></p>
+            <p style="margin:0;"><strong>Screening:</strong> <span th:text="${#temporals.format(ticket.screening.screeningDateTime, 'dd/MM/yyyy HH:mm')}"></span></p>
+            <p style="margin:0;"><strong>Row:</strong> <span th:text="${ticket.seat.seatRow}"></span></p>
+            <p style="margin:0;"><strong>Seat:</strong> <span th:text="${ticket.seat.seatNumber}"></span></p>
+            <p style="margin:0;"><strong>Customer:</strong> <span th:text="${order.clientName}"></span></p>
         </div>
     </section>
 </div>
 
 <br>
-<a th:href="@{/client}">Tornar al catàleg</a>
+<a th:href="@{/client}">Back to catalog</a>
 
 </div>
 </div>

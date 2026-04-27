@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:replace="~{layout :: layout(~{::content})}">
+<div th:replace="~{layout-admin :: layout(~{::content})}">
     <div th:fragment="content">
-        <h1>Panell d'Administració</h1>
-        <p>Benvingut administrador</p>
+        <h1>Administration Panel</h1>
+        <p>Welcome, administrator</p>
         <hr>
 
-        <h2>Gestió</h2>
+        <h2>Management</h2>
         <ul>
-            <li><a th:href="@{/cinemes}">🎭 Gestionar Cinemes</a></li>
-            <li><a th:href="@{/movies}">🎬 Gestionar Pel·lícules</a></li>
-            <li><a th:href="@{/admin/orders}">🧾 Gestionar Comandes</a></li>
+            <li><a th:href="@{/cinemes}">🎭 Manage Cinemas</a></li>
+            <li><a th:href="@{/movies}">🎬 Manage Movies</a></li>
+            <li><a th:href="@{/admin/orders}">🧾 Manage Orders</a></li>
         </ul>
 
         <br>

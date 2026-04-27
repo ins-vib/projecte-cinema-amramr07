@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.daw.CinemaDaw.domain.cinema.Cinema;
 import com.daw.CinemaDaw.domain.cinema.Room;
 import com.daw.CinemaDaw.domain.cinema.Seat;
+import com.daw.CinemaDaw.domain.cinema.SeatType;
 import com.daw.CinemaDaw.repository.CinemaRepository;
 import com.daw.CinemaDaw.repository.RoomRepository;
+import com.daw.CinemaDaw.repository.SeatRepository;
 import com.daw.CinemaDaw.repository.ScreeningRepository;
 
 import jakarta.validation.Valid;
@@ -27,12 +29,15 @@ public class RoomController {
     private final RoomRepository roomRepository;
     private final CinemaRepository cinemaRepository;
     private final ScreeningRepository screeningRepository;
+    private final SeatRepository seatRepository;
 
     public RoomController(RoomRepository roomRepository, CinemaRepository cinemaRepository,
-                          ScreeningRepository screeningRepository) {
+                          ScreeningRepository screeningRepository,
+                          SeatRepository seatRepository) {
         this.roomRepository = roomRepository;
         this.cinemaRepository = cinemaRepository;
         this.screeningRepository = screeningRepository;
+        this.seatRepository = seatRepository;
     }
 
     // Veure detall sala
@@ -73,7 +78,8 @@ public class RoomController {
         Optional<Cinema> optional = cinemaRepository.findById(cinemaId);
         if (optional.isPresent()) {
             room.setCinema(optional.get());
-            roomRepository.save(room);
+            Room savedRoom = roomRepository.save(room);
+            ensureSeatsForRoom(savedRoom);
             return "redirect:/cinema/" + cinemaId;
         }
 
@@ -110,7 +116,8 @@ public class RoomController {
             Room existing = optional.get();
             existing.setName(room.getName());
             existing.setCapacity(room.getCapacity());
-            roomRepository.save(existing);
+            Room savedRoom = roomRepository.save(existing);
+            ensureSeatsForRoom(savedRoom);
             return "redirect:/cinema/" + existing.getCinema().getId();
         }
 
@@ -136,6 +143,8 @@ public class RoomController {
         Optional<Room> optional = roomRepository.findById(id);
         if (optional.isPresent()) {
             Room room = optional.get();
+            ensureSeatsForRoom(room);
+            room = roomRepository.findById(id).orElse(room);
             room.getSeats().sort(
                 Comparator.comparingInt(Seat::getSeatRow)
                           .thenComparingInt(Seat::getSeatNumber)
@@ -144,5 +153,22 @@ public class RoomController {
             return "rooms/room-seats";
         }
         return "redirect:/cinemes";
+    }
+
+    private void ensureSeatsForRoom(Room room) {
+        int currentSeats = roomRepository.countSeatsByRoomId(room.getId());
+        if (currentSeats >= room.getCapacity()) {
+            return;
+        }
+
+        int cols = 10;
+        for (int i = currentSeats; i < room.getCapacity(); i++) {
+            int row = i / cols + 1;
+            int number = i % cols + 1;
+
+            Seat seat = new Seat(row, number, row, number, SeatType.STANDARD, true);
+            seat.setRoom(room);
+            seatRepository.save(seat);
+        }
     }
 }

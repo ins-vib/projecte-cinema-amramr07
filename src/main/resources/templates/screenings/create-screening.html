@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:replace="~{layout :: layout(~{::content})}">
+<div th:replace="~{layout-admin :: layout(~{::content})}">
 <div th:fragment="content">
-<h1>Nova Sessió per <span th:text="${movie.title}"></span></h1>
+<h1>New Screening for <span th:text="${movie.title}"></span></h1>
 <p th:if="${screeningError}" th:text="${screeningError}" style="color:red;"></p>
 <form th:action="@{/screening/create}" th:object="${screening}" method="post">
     <input type="hidden" name="movieId" th:value="${movie.id}">
     <div>
-        <label>Data i Hora:</label>
+        <label>Date and Time:</label>
         <input type="datetime-local" th:field="*{screeningDateTime}" />
         <div th:if="${#fields.hasErrors('screeningDateTime')}" th:errors="*{screeningDateTime}" style="color:red;"></div>
         <br>
     </div>
     <div>
-        <label>Sala:</label>
+        <label>Room:</label>
         <select name="roomId">
-            <option value="" disabled selected>-- Selecciona una sala --</option>
+            <option value="" disabled selected>-- Select a room --</option>
             <option th:each="room : ${rooms}"
                     th:value="${room.id}"
                     th:selected="${screening.room != null and room.id == screening.room.id}"
@@ -27,14 +27,14 @@
         <br>
     </div>
     <div>
-        <label>Preu (€):</label>
+        <label>Price (€):</label>
         <input type="number" step="0.01" min="0.01" th:field="*{price}" />
         <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}" style="color:red;"></div>
         <br>
     </div>
     <br>
-    <button type="submit">Guardar</button>
-    <a th:href="@{/movies/{id}(id=${movie.id})}">Tornar enrere</a>
+    <button type="submit">Save</button>
+    <a th:href="@{/movies/{id}(id=${movie.id})}">Back</a>
 </form>
 </div>
 </div>

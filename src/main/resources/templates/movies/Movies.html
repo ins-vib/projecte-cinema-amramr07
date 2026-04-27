@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:replace="~{layout :: layout(~{::content})}">
+<div th:replace="~{layout-admin :: layout(~{::content})}">
 <div th:fragment="content">
 <h1>Llista de Pel·lícules</h1>
 <a th:href="@{/movies/create}">Crear pel·lícula</a>

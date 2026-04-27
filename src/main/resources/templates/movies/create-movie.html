@@ -4,7 +4,7 @@
 
 <body>
 
-<div th:replace="~{layout :: layout(~{::content})}">
+<div th:replace="~{layout-admin :: layout(~{::content})}">
 
 <div th:fragment="content">
 
@@ -14,26 +14,32 @@
 
 <label>Títol</label>
 <input type="text" th:field="*{title}">
+<p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" style="color:red;"></p>
 <br><br>
 
 <label>Durada (min)</label>
 <input type="number" th:field="*{duration}">
+<p th:if="${#fields.hasErrors('duration')}" th:errors="*{duration}" style="color:red;"></p>
 <br><br>
 
 <label>Gènere</label>
 <input type="text" th:field="*{genre}">
+<p th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}" style="color:red;"></p>
 <br><br>
 
 <label>Descripció</label>
 <textarea th:field="*{sinopsis}"></textarea>
+<p th:if="${#fields.hasErrors('sinopsis')}" th:errors="*{sinopsis}" style="color:red;"></p>
 <br><br>
 
 <label>Imatge (URL o ruta)</label>
 <input type="text" th:field="*{posterUrl}" placeholder="/images/peliculas/ironman.jpg">
+<p th:if="${#fields.hasErrors('posterUrl')}" th:errors="*{posterUrl}" style="color:red;"></p>
 <br><br>
 
 <label>Data Estrena</label>
 <input type="date" th:field="*{releaseDate}">
+<p th:if="${#fields.hasErrors('releaseDate')}" th:errors="*{releaseDate}" style="color:red;"></p>
 <br><br>
 
 <button type="submit">Guardar</button>

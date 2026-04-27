@@ -1,15 +1,15 @@
-<div th:replace="~{layout :: layout(~{::content})}">
+<div th:replace="~{layout-admin :: layout(~{::content})}">
 <div th:fragment="content">
 
-<h1>Afegir Silla a <span th:text="${room.name}"></span></h1>
+<h1>Add Seat to <span th:text="${room.name}"></span></h1>
 
 <form th:action="@{/seat/create}" th:object="${seat}" method="post">
     <input type="hidden" name="roomId" th:value="${room.id}" />
 
-    <label>Fila:</label>
+    <label>Row:</label>
     <input type="number" th:field="*{seatRow}" /><br/>
 
-    <label>Número:</label>
+    <label>Number:</label>
     <input type="number" th:field="*{seatNumber}" /><br/>
 
     <label>PosX:</label>
@@ -18,19 +18,19 @@
     <label>PosY:</label>
     <input type="number" th:field="*{posY}" /><br/>
 
-    <label>Tipo:</label>
+    <label>Type:</label>
     <select th:field="*{type}">
         <option th:each="t : ${T(com.daw.CinemaDaw.domain.cinema.SeatType).values()}"
                 th:value="${t}" th:text="${t}"></option>
     </select><br/>
 
-    <label>Activo:</label>
+    <label>Active:</label>
     <input type="checkbox" th:field="*{active}" /><br/><br/>
 
-    <button type="submit">Guardar</button>
+    <button type="submit">Save</button>
 </form>
 
-<a th:href="@{/room/{id}/seats(id=${room.id})}">Tornar a la sala</a>
+<a th:href="@{/room/{id}/seats(id=${room.id})}">Back to room</a>
 
 </div>
 </div>

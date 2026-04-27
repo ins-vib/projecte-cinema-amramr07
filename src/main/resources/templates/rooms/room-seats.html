@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Seients de [[${room.name}]]</title>
+    <title>Seats for [[${room.name}]]</title>
     <style>
         .seats-grid {
             display: grid;
@@ -35,13 +35,36 @@
 </head>
 <body>
 
-<div th:replace="~{layout :: layout(~{::content})}">
+<div th:replace="~{layout-admin :: layout(~{::content})}">
     <div th:fragment="content" style="width:100%;">
 
-        <h1>Seients de <span th:text="${room.name}"></span></h1>
-        <p>Capacitat total: <strong th:text="${room.capacity}"></strong> seients</p>
+        <h1>Seats for <span th:text="${room.name}"></span></h1>
+        <p>Total capacity: <strong th:text="${room.capacity}"></strong> seats</p>
 
-        <a th:href="@{/seat/create(roomId=${room.id})}">Nova Silla</a>
+        <a th:href="@{/seat/create(roomId=${room.id})}">New Seat</a>
+
+        <table border="1" th:if="${not #lists.isEmpty(room.seats)}">
+            <thead>
+                <tr>
+                    <th>Row</th>
+                    <th>Seat</th>
+                    <th>Type</th>
+                    <th>Active</th>
+                    <th>Pos X</th>
+                    <th>Pos Y</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="seat : ${room.seats}">
+                    <td th:text="${seat.seatRow}"></td>
+                    <td th:text="${seat.seatNumber}"></td>
+                    <td th:text="${seat.type}"></td>
+                    <td th:text="${seat.active ? 'Yes' : 'No'}"></td>
+                    <td th:text="${seat.posX}"></td>
+                    <td th:text="${seat.posY}"></td>
+                </tr>
+            </tbody>
+        </table>
 
         <div class="seats-grid">
     <div th:each="seat : ${room.seats}" class="seat-item">
@@ -67,7 +90,7 @@
     </div>
 </div>
         <br>
-        <a th:href="@{/cinema/{id}(id=${room.cinema.id})}">Tornar al cinema</a>
+        <a th:href="@{/cinema/{id}(id=${room.cinema.id})}">Back to cinema</a>
 
     </div>
 </div>

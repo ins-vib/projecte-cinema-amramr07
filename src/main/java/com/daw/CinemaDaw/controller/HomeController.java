@@ -112,7 +112,7 @@ public HomeController(NewsService newsService, UserRepository userRepository,
                              @RequestParam String confirmPassword,
                              Model model) {
         if (!user.getPassword().equals(confirmPassword)) {
-            model.addAttribute("errorMessage", "Les contrasenyes no coincideixen.");
+            model.addAttribute("errorMessage", "Passwords do not match.");
             return "register";
         }
         user.setPassword(encoder.encode(user.getPassword()));
@@ -200,10 +200,10 @@ public String confirmSeats(@PathVariable Long id,
 
     if (seats.isEmpty()) {
         cart.remove(id);
-        redirectAttributes.addFlashAttribute("seatMessage", "No s'ha afegit cap seient al carret per aquesta sessió.");
+        redirectAttributes.addFlashAttribute("seatMessage", "No seats were added to the cart for this screening.");
     } else {
         cart.put(id, seats);
-        redirectAttributes.addFlashAttribute("seatMessage", "Entrades afegides al carret. Cada seient es pagarà com un ticket independent.");
+        redirectAttributes.addFlashAttribute("seatMessage", "Tickets added to the cart. Each seat will be purchased as a separate ticket.");
     }
 
     if (cart.isEmpty()) {

@@ -5,7 +5,7 @@
 <div th:fragment="content">
 
 <div class="client-movie-page">
-<h1>Pel·lícules disponibles</h1>
+<h1>Available Movies</h1>
 
 <div class="client-movie-grid">
     <a th:each="movie : ${movies}"
@@ -17,7 +17,7 @@
                  th:alt="${movie.title}">
             <div th:unless="${movie.posterUrl != null and !#strings.isEmpty(movie.posterUrl)}"
                  class="client-movie-placeholder">
-                <span>Imagen</span>
+                <span>Image</span>
             </div>
         </div>
 

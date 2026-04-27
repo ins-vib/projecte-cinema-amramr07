@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:replace="~{layout :: layout(~{::content})}">
+<div th:replace="~{layout-admin :: layout(~{::content})}">
     <div th:fragment="content">
-        <h1>Llistat de comandes</h1>
+        <h1>Order List</h1>
 
-        <p th:if="${#lists.isEmpty(orders)}">Encara no hi ha cap comanda registrada.</p>
+        <p th:if="${#lists.isEmpty(orders)}">There are no orders yet.</p>
 
         <table th:if="${not #lists.isEmpty(orders)}" border="1">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Client</th>
+                    <th>Customer</th>
                     <th>Email</th>
-                    <th>Data</th>
+                    <th>Date</th>
                     <th>Total</th>
-                    <th>Estat</th>
-                    <th>Entrades</th>
-                    <th>Accions</th>
+                    <th>Status</th>
+                    <th>Tickets</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,14 +30,14 @@
                     <td th:text="${order.status}"></td>
                     <td th:text="${#lists.size(order.tickets)}"></td>
                     <td>
-                        <a th:href="@{/admin/orders/{id}(id=${order.id})}">Veure detall</a>
+                        <a th:href="@{/admin/orders/{id}(id=${order.id})}">View details</a>
                     </td>
                 </tr>
             </tbody>
         </table>
 
         <br>
-        <a th:href="@{/home}">Tornar al panell</a>
+        <a th:href="@{/home}">Back to panel</a>
     </div>
 </div>
 </body>
