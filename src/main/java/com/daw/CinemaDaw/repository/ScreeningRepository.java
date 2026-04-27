@@ -10,9 +10,9 @@ import com.daw.CinemaDaw.domain.movie.Screening;
 
 public interface ScreeningRepository extends JpaRepository<Screening, Long> {
     List<Screening> findByMovieId(Long movieId);
+    List<Screening> findByRoomId(Long roomId); 
     List<Screening> findByMovieAndScreeningDateTimeGreaterThanEqualOrderByScreeningDateTimeAsc(
-        Movie movie, 
+        Movie movie,
         LocalDateTime datetime
     );
-    
 }

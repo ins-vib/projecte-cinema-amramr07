@@ -17,6 +17,7 @@ import com.daw.CinemaDaw.domain.cinema.Room;
 import com.daw.CinemaDaw.domain.cinema.Seat;
 import com.daw.CinemaDaw.repository.CinemaRepository;
 import com.daw.CinemaDaw.repository.RoomRepository;
+import com.daw.CinemaDaw.repository.ScreeningRepository;
 
 import jakarta.validation.Valid;
 
@@ -25,10 +26,13 @@ public class RoomController {
 
     private final RoomRepository roomRepository;
     private final CinemaRepository cinemaRepository;
+    private final ScreeningRepository screeningRepository;
 
-    public RoomController(RoomRepository roomRepository, CinemaRepository cinemaRepository) {
+    public RoomController(RoomRepository roomRepository, CinemaRepository cinemaRepository,
+                          ScreeningRepository screeningRepository) {
         this.roomRepository = roomRepository;
         this.cinemaRepository = cinemaRepository;
+        this.screeningRepository = screeningRepository;
     }
 
     // Veure detall sala
@@ -54,27 +58,27 @@ public class RoomController {
         return "redirect:/cinemes";
     }
 
-   @PostMapping("/room/create")
-public String crearRoom(@Valid @ModelAttribute Room room,
-                        BindingResult result,
-                        @RequestParam Long cinemaId,
-                        Model model) {
+    // Crear sala
+    @PostMapping("/room/create")
+    public String crearRoom(@Valid @ModelAttribute Room room,
+                            BindingResult result,
+                            @RequestParam Long cinemaId,
+                            Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("cinemaId", cinemaId);
+            cinemaRepository.findById(cinemaId).ifPresent(c -> model.addAttribute("cinema", c));
+            return "rooms/create-room";
+        }
 
-    if (result.hasErrors()) {
-        model.addAttribute("cinemaId", cinemaId);
-        cinemaRepository.findById(cinemaId).ifPresent(c -> model.addAttribute("cinema", c)); 
-        return "rooms/create-room";
+        Optional<Cinema> optional = cinemaRepository.findById(cinemaId);
+        if (optional.isPresent()) {
+            room.setCinema(optional.get());
+            roomRepository.save(room);
+            return "redirect:/cinema/" + cinemaId;
+        }
+
+        return "redirect:/cinemes";
     }
-
-    Optional<Cinema> optional = cinemaRepository.findById(cinemaId);
-    if (optional.isPresent()) {
-        room.setCinema(optional.get());
-        roomRepository.save(room);
-        return "redirect:/cinema/" + cinemaId;
-    }
-
-    return "redirect:/cinemes";
-}
 
     // Mostrar formulari editar sala
     @GetMapping("/room/edit/{id}")
@@ -87,59 +91,58 @@ public String crearRoom(@Valid @ModelAttribute Room room,
         return "redirect:/cinemes";
     }
 
-   @PostMapping("/room/edit")
-public String editRoom(@Valid @ModelAttribute Room room,
-                       BindingResult result,
-                       Model model) {
+    // Editar sala
+    @PostMapping("/room/edit")
+    public String editRoom(@Valid @ModelAttribute Room room,
+                           BindingResult result,
+                           Model model) {
+        Optional<Room> optional = roomRepository.findById(room.getId());
 
-    Optional<Room> optional = roomRepository.findById(room.getId());
-
-    if (result.hasErrors()) {
-        if (optional.isPresent()) {
-            room.setCinema(optional.get().getCinema()); 
-            model.addAttribute("cinema", optional.get().getCinema());
+        if (result.hasErrors()) {
+            if (optional.isPresent()) {
+                room.setCinema(optional.get().getCinema());
+                model.addAttribute("cinema", optional.get().getCinema());
+            }
+            return "rooms/edit-room";
         }
-        return "rooms/edit-room";
+
+        if (optional.isPresent()) {
+            Room existing = optional.get();
+            existing.setName(room.getName());
+            existing.setCapacity(room.getCapacity());
+            roomRepository.save(existing);
+            return "redirect:/cinema/" + existing.getCinema().getId();
+        }
+
+        return "redirect:/cinemes";
     }
 
-    if (optional.isPresent()) {
-        Room existing = optional.get();
-        existing.setName(room.getName());
-        existing.setCapacity(room.getCapacity());
-        roomRepository.save(existing);
-        return "redirect:/cinema/" + existing.getCinema().getId();
-    }
-
-    return "redirect:/cinemes";
-}
-
-    // Esborrar sala
+    // Esborrar sala (borra primer els screenings associats)
     @GetMapping("/room/delete/{id}")
     public String deleteRoom(@PathVariable Long id) {
         Optional<Room> optional = roomRepository.findById(id);
         if (optional.isPresent()) {
             Long cinemaId = optional.get().getCinema().getId();
+            screeningRepository.deleteAll(screeningRepository.findByRoomId(id));
             roomRepository.delete(optional.get());
             return "redirect:/cinema/" + cinemaId;
         }
         return "redirect:/cinemes";
     }
 
-@GetMapping("/room/{id}/seats")
-public String verSeients(@PathVariable Long id, Model model) {
-    Optional<Room> optional = roomRepository.findById(id);
-    if (optional.isPresent()) {
-        Room room = optional.get();
-
-        
-        room.getSeats().sort(
-            Comparator.comparingInt(Seat::getSeatRow)
-                      .thenComparingInt(Seat::getSeatNumber)
-        );
-
-        model.addAttribute("room", room);
-        return "rooms/room-seats";
+    // Veure seients d'una sala
+    @GetMapping("/room/{id}/seats")
+    public String verSeients(@PathVariable Long id, Model model) {
+        Optional<Room> optional = roomRepository.findById(id);
+        if (optional.isPresent()) {
+            Room room = optional.get();
+            room.getSeats().sort(
+                Comparator.comparingInt(Seat::getSeatRow)
+                          .thenComparingInt(Seat::getSeatNumber)
+            );
+            model.addAttribute("room", room);
+            return "rooms/room-seats";
+        }
+        return "redirect:/cinemes";
     }
-    return "redirect:/cinemes";
-}
 }

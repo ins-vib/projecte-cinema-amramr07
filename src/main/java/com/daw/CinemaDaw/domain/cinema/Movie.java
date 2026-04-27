@@ -41,6 +41,9 @@ private String genre;
 @Column(columnDefinition="TEXT")
 private String sinopsis;
 
+@Column(name = "poster_url")
+private String posterUrl;
+
 @Column(name = "release_date")
 @DateTimeFormat(pattern="yyyy-MM-dd")
 private LocalDate releaseDate;
@@ -66,6 +69,14 @@ private LocalDate releaseDate;
         this.sinopsis = sinopsis;
     }
 
+    public String getPosterUrl() {
+        return posterUrl;
+    }
+
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
+    }
+
     public Long getId() {
         return id;
     }
@@ -82,7 +93,7 @@ private LocalDate releaseDate;
         this.title = title;
     }
 
-    public int getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 

@@ -28,6 +28,7 @@
 
     .screening-seat-item {
         text-align: center;
+        position: relative;
     }
 
     .screening-seat-input {
@@ -42,23 +43,58 @@
         align-items: center;
         gap: 0.35rem;
         cursor: pointer;
+        position: relative;
     }
 
     .screening-seat-label .seat {
         width: 52px;
         height: 52px;
+        transition: transform 0.15s ease;
     }
 
     .screening-seat-number {
         font-size: 0.8rem;
         color: var(--text-secondary);
+        transition: color 0.15s ease;
     }
 
-    .screening-seat-input:checked + .screening-seat-label .seat {
+    /* SELECCIONADO - via clase JS */
+    .screening-seat-item.is-selected .seat {
+        color: #38b000 !important;
+        transform: scale(1.15);
+    }
+
+    .screening-seat-item.is-selected .screening-seat-number {
         color: #38b000;
-        filter: drop-shadow(0 0 14px rgba(56,176,0,0.75)) drop-shadow(0 6px 16px rgba(0,0,0,0.6));
+        font-weight: 700;
     }
 
+    /* Badge check */
+    .seat-check-badge {
+        display: none;
+        position: absolute;
+        top: -6px;
+        right: 2px;
+        width: 20px;
+        height: 20px;
+        background: #38b000;
+        border-radius: 50%;
+        border: 2px solid white;
+        z-index: 10;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .seat-check-badge svg {
+        width: 11px;
+        height: 11px;
+    }
+
+    .screening-seat-item.is-selected .seat-check-badge {
+        display: flex;
+    }
+
+    /* OCUPADO */
     .screening-seat-input:disabled + .screening-seat-label {
         cursor: not-allowed;
         opacity: 0.45;
@@ -66,9 +102,15 @@
 
     .screening-seat-input:disabled + .screening-seat-label .seat {
         color: var(--danger-bright);
-        filter: drop-shadow(0 0 10px rgba(230,57,70,0.55)) drop-shadow(0 4px 12px rgba(0,0,0,0.45));
     }
 
+    /* Hover disponibles */
+    .screening-seat-item:not(.is-selected) .screening-seat-input:not(:disabled) + .screening-seat-label:hover .seat {
+        transform: scale(1.08);
+        color: #70c94a;
+    }
+
+    /* Leyenda */
     .screening-seat-legend {
         display: flex;
         flex-wrap: wrap;
@@ -90,8 +132,8 @@
     }
 
     .screening-seat-dot.available { background: var(--ocean-primary); }
-    .screening-seat-dot.selected { background: #38b000; }
-    .screening-seat-dot.taken { background: var(--danger-bright); }
+    .screening-seat-dot.selected  { background: #38b000; }
+    .screening-seat-dot.taken     { background: var(--danger-bright); }
 </style>
 
 <h1 th:text="${screening.movie.title}"></h1>
@@ -108,6 +150,7 @@
     <span><i class="screening-seat-dot selected"></i> Seleccionat</span>
     <span><i class="screening-seat-dot taken"></i> Ocupat</span>
 </div>
+
 <div class="seats">
     <form th:action="@{/screenings/seats/confirm/{id}(id=${screening.id})}"
           th:object="${selectedSeats}" method="post">
@@ -118,6 +161,12 @@
                      th:text="'Fila ' + ${seat.seatRow}">
                 </div>
                 <div class="screening-seat-item">
+                   
+                    <div class="seat-check-badge">
+                        <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 6l3 3 5-5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
                     <input type="checkbox"
                            th:id="'seat-' + ${seat.id}"
                            th:field="*{seats}"
@@ -155,6 +204,25 @@
         <button type="button">🛒 Finalitzar compra</button>
     </a>
 </div>
+
+<script>
+    document.querySelectorAll('.screening-seat-input').forEach(function(checkbox) {
+        var item = checkbox.closest('.screening-seat-item');
+
+        
+        if (checkbox.checked) {
+            item.classList.add('is-selected');
+        }
+
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                item.classList.add('is-selected');
+            } else {
+                item.classList.remove('is-selected');
+            }
+        });
+    });
+</script>
 
 </div>
 </div>

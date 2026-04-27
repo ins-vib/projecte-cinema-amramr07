@@ -43,7 +43,16 @@
     </tbody>
 </table>
 
-<p><strong>Total: </strong><span th:text="${total}"></span> €</p>
+<p th:text="${summary.rewardDescription}" style="color:#0b7285;"></p>
+
+<p><strong>Subtotal: </strong><span th:text="${#numbers.formatDecimal(summary.subtotal, 1, 2)}"></span> €</p>
+<p th:if="${summary.hasDiscount()}">
+    <strong>Descompte:</strong>
+    <span th:text="${#numbers.formatDecimal(summary.discountAmount, 1, 2)}"></span> €
+    <span th:if="${summary.appliedCouponCode != null}" class="coupon-inline-code" th:text="${summary.appliedCouponCode}"></span>
+</p>
+<p th:if="${summary.hasCouponMessage()}" th:text="${summary.couponMessage}" style="color:#b02a37;"></p>
+<p><strong>Total: </strong><span th:text="${#numbers.formatDecimal(summary.total, 1, 2)}"></span> €</p>
 
 <form th:action="@{/client/order/confirm}" th:object="${checkoutDTO}" method="post">
     <div>
@@ -56,6 +65,14 @@
         <input type="email" th:field="*{clientEmail}" />
         <span th:if="${#fields.hasErrors('clientEmail')}" th:errors="*{clientEmail}" style="color:red"></span>
     </div>
+    <div>
+        <label>Cupó:</label>
+        <input type="text" th:field="*{couponCode}" placeholder="CINEX5-XXXXXXXX" class="coupon-code-input" />
+        <span th:if="${#fields.hasErrors('couponCode')}" th:errors="*{couponCode}" style="color:red"></span>
+    </div>
+    <p style="font-size:0.95rem;">
+        Si la compra arriba a 25,00 €, rebràs un cupó de 5,00 € per a la següent compra.
+    </p>
     <button type="submit">Confirmar comanda</button>
 </form>
 

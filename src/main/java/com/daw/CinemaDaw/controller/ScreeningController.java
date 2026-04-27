@@ -1,6 +1,5 @@
 package com.daw.CinemaDaw.controller;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.dao.DataIntegrityViolationException;

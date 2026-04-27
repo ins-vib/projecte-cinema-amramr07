@@ -4,6 +4,7 @@
 <div th:replace="~{layout-client :: layout(~{::content})}">
 <div th:fragment="content">
 
+<div class="coupon-page">
 
 <h1>Compra confirmada</h1>
 
@@ -17,7 +18,21 @@
     <span th:text="${#temporals.format(order.orderDateTime, 'dd/MM/yyyy HH:mm')}"></span>
 </p>
 
-<p><strong>Total pagat:</strong> <span th:text="${order.totalAmount}"></span> €</p>
+<p><strong>Subtotal:</strong> <span th:text="${#numbers.formatDecimal(order.subtotalAmount, 1, 2)}"></span> €</p>
+<p th:if="${order.discountAmount > 0}">
+    <strong>Descompte aplicat:</strong>
+    <span th:text="${#numbers.formatDecimal(order.discountAmount, 1, 2)}"></span> €
+    <span th:if="${order.appliedCouponCode != null}" class="coupon-inline-code" th:text="${order.appliedCouponCode}"></span>
+</p>
+<p><strong>Total pagat:</strong> <span th:text="${#numbers.formatDecimal(order.totalAmount, 1, 2)}"></span> €</p>
+
+<div th:if="${order.generatedCouponCode != null}" class="coupon-reward-card">
+    <p class="coupon-reward-eyebrow">Promocio desbloquejada</p>
+    <h3>Has guanyat un cupo!</h3>
+    <p class="coupon-reward-copy">Guarda aquest codi per a la teva seguent compra.</p>
+    <div class="coupon-code-box" th:text="${order.generatedCouponCode}"></div>
+    <p class="coupon-reward-meta">Val 5,00 €, es d'un sol us, caduca en 30 dies i demana una compra minima de 20,00 €.</p>
+</div>
 
 <h2>Tickets generats</h2>
 
@@ -50,6 +65,7 @@
 <br>
 <a th:href="@{/client}">Tornar al catàleg</a>
 
+</div>
 </div>
 </div>
 </body>

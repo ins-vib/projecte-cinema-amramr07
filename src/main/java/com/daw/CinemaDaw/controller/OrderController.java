@@ -23,6 +23,7 @@ import com.daw.CinemaDaw.domain.order.Order;
 import com.daw.CinemaDaw.repository.OrderRepository;
 import com.daw.CinemaDaw.repository.ScreeningRepository;
 import com.daw.CinemaDaw.repository.SeatRepository;
+import com.daw.CinemaDaw.service.CouponService;
 import com.daw.CinemaDaw.service.SeatUnavailableException;
 import com.daw.CinemaDaw.service.TicketService;
 
@@ -36,15 +37,18 @@ public class OrderController {
     private final ScreeningRepository screeningRepository;
     private final SeatRepository seatRepository;
     private final TicketService ticketService;
+    private final CouponService couponService;
 
     public OrderController(OrderRepository orderRepository,
                            ScreeningRepository screeningRepository,
                            SeatRepository seatRepository,
-                           TicketService ticketService) {
+                           TicketService ticketService,
+                           CouponService couponService) {
         this.orderRepository = orderRepository;
         this.screeningRepository = screeningRepository;
         this.seatRepository = seatRepository;
         this.ticketService = ticketService;
+        this.couponService = couponService;
     }
 
     @GetMapping({"/client/order/checkout"})
@@ -62,8 +66,6 @@ public class OrderController {
         }
 
         List<CheckoutLine> lines = new ArrayList<>();
-        double total = 0.0;
-
         for (Map.Entry<Long, List<Long>> entry : cart.entrySet()) {
             Long screeningId = entry.getKey();
             List<Long> seatIds = entry.getValue();
@@ -89,7 +91,6 @@ public class OrderController {
                     seat.getSeatNumber(),
                     screening.getPrice()
                 ));
-                total += screening.getPrice();
             }
         }
 
@@ -100,14 +101,20 @@ public class OrderController {
 
         session.setAttribute("cart", cart);
         model.addAttribute("lines", lines);
-        model.addAttribute("total", total);
         if (!model.containsAttribute("checkoutDTO")) {
             model.addAttribute("checkoutDTO", new CheckoutDTO());
         }
+        CheckoutDTO checkoutDTO = (CheckoutDTO) model.getAttribute("checkoutDTO");
+        TicketService.CheckoutSummary summary = ticketService.calculateCheckoutSummary(
+            cart,
+            checkoutDTO.getCouponCode(),
+            checkoutDTO.getClientEmail()
+        );
+        model.addAttribute("summary", summary);
         return "client/checkout";
     }
 
-    @PostMapping({"/client/order/cart/remove", "/order/cart/remove"})
+    @PostMapping({"/client/order/cart/remove"})
     public String removeCartItem(@RequestParam Long screeningId,
                                  @RequestParam Long seatId,
                                  HttpSession session,
@@ -134,19 +141,21 @@ public class OrderController {
         return "redirect:/client/order/checkout";
     }
 
-    @PostMapping({"/client/order/cart/clear", "/order/cart/clear"})
+    @PostMapping({"/client/order/cart/clear"})
     public String clearCart(HttpSession session, RedirectAttributes redirectAttributes) {
         session.removeAttribute("cart");
         redirectAttributes.addFlashAttribute("cartMessage", "S'ha buidat el carret.");
         return "redirect:/client";
     }
 
-    @PostMapping({"/client/order/confirm", "/order/confirm"})
+    @PostMapping({"/client/order/confirm"})
     public String confirmOrder(@Valid @ModelAttribute CheckoutDTO checkoutDTO,
                                BindingResult result,
                                HttpSession session,
                                Model model,
                                RedirectAttributes redirectAttributes) {
+        checkoutDTO.setCouponCode(couponService.normalizeCode(checkoutDTO.getCouponCode()));
+
         if (result.hasErrors()) {
             model.addAttribute("checkoutDTO", checkoutDTO);
             return showCheckout(session, model);
@@ -167,6 +176,10 @@ public class OrderController {
 
             session.removeAttribute("cart");
             return "redirect:/client/order/confirmation/" + order.getId();
+        } catch (IllegalArgumentException ex) {
+            result.rejectValue("couponCode", "coupon.invalid", ex.getMessage());
+            model.addAttribute("checkoutDTO", checkoutDTO);
+            return showCheckout(session, model);
         } catch (SeatUnavailableException ex) {
             removeUnavailableSeatsFromCart(cart);
             if (cart.isEmpty()) {
@@ -200,7 +213,7 @@ public class OrderController {
         cart.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue().isEmpty());
     }
 
-    @GetMapping({"/client/order/confirmation/{id}", "/order/confirmation/{id}"})
+    @GetMapping({"/client/order/confirmation/{id}"})
     public String showConfirmation(@PathVariable Long id, Model model) {
         Optional<Order> optional = orderRepository.findById(id);
         if (optional.isPresent()) {

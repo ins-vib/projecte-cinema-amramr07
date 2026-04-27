@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.daw.CinemaDaw.DTO.CheckoutDTO;
 import com.daw.CinemaDaw.domain.cinema.Seat;
+import com.daw.CinemaDaw.domain.order.Coupon;
 import com.daw.CinemaDaw.domain.movie.Screening;
 import com.daw.CinemaDaw.domain.order.Order;
 import com.daw.CinemaDaw.domain.order.OrderStatus;
@@ -32,15 +34,18 @@ public class TicketService {
     private final SeatRepository seatRepository;
     private final TicketRepository ticketRepository;
     private final OrderRepository orderRepository;
+    private final CouponService couponService;
 
     public TicketService(ScreeningRepository screeningRepository,
                          SeatRepository seatRepository,
                          TicketRepository ticketRepository,
-                         OrderRepository orderRepository) {
+                         OrderRepository orderRepository,
+                         CouponService couponService) {
         this.screeningRepository = screeningRepository;
         this.seatRepository = seatRepository;
         this.ticketRepository = ticketRepository;
         this.orderRepository = orderRepository;
+        this.couponService = couponService;
     }
 
     @Transactional
@@ -56,7 +61,7 @@ public class TicketService {
         order.setClientEmail(checkoutDTO.getClientEmail());
         order.setStatus(OrderStatus.CONFIRMED);
 
-        double total = 0.0;
+        double subtotal = 0.0;
         List<Ticket> tickets = new ArrayList<>();
 
         for (Map.Entry<Long, List<Long>> entry : cart.entrySet()) {
@@ -78,20 +83,76 @@ public class TicketService {
                 ticket.setPrice(screening.getPrice());
                 ticket.setOrder(order);
                 tickets.add(ticket);
-                total += screening.getPrice();
+                subtotal += screening.getPrice();
             }
         }
 
         if (tickets.isEmpty()) return null;
 
+        CouponService.CouponValidationResult couponValidation =
+            couponService.validateCoupon(checkoutDTO.getCouponCode(), checkoutDTO.getClientEmail(), subtotal);
+
+        double discountAmount = Math.min(couponValidation.getDiscountAmount(), subtotal);
+        double total = Math.max(0.0, subtotal - discountAmount);
+
+        order.setSubtotalAmount(subtotal);
+        order.setDiscountAmount(discountAmount);
         order.setTotalAmount(total);
+        order.setAppliedCouponCode(couponValidation.hasCoupon() ? couponValidation.getCoupon().getCode() : null);
         order.setTickets(tickets);
+
         try {
-            return orderRepository.saveAndFlush(order);
+            Order savedOrder = orderRepository.saveAndFlush(order);
+
+            if (couponValidation.hasCoupon()) {
+                couponService.markAsUsed(couponValidation.getCoupon(), savedOrder);
+            }
+
+            if (subtotal >= CouponService.REWARD_THRESHOLD) {
+                Coupon generatedCoupon = couponService.createRewardCoupon(savedOrder);
+                savedOrder.setGeneratedCouponCode(generatedCoupon.getCode());
+                savedOrder = orderRepository.save(savedOrder);
+            }
+
+            return savedOrder;
         } catch (DataIntegrityViolationException ex) {
             throw new SeatUnavailableException(
                 List.of("Alguns seients s'acaben de vendre mentre confirmaves la compra. Torna a seleccionar-los.")
             );
+        }
+    }
+
+    public CheckoutSummary calculateCheckoutSummary(Map<Long, List<Long>> cart, String rawCouponCode, String clientEmail) {
+        double subtotal = 0.0;
+
+        if (cart == null || cart.isEmpty()) {
+            return new CheckoutSummary(0.0, 0.0, 0.0, null, null);
+        }
+
+        for (Map.Entry<Long, List<Long>> entry : cart.entrySet()) {
+            Long screeningId = entry.getKey();
+            List<Long> seatIds = entry.getValue();
+            if (seatIds == null || seatIds.isEmpty()) continue;
+
+            Optional<Screening> optScreening = screeningRepository.findById(screeningId);
+            if (optScreening.isEmpty()) continue;
+            Screening screening = optScreening.get();
+
+            subtotal += screening.getPrice() * seatIds.size();
+        }
+
+        String normalizedCode = couponService.normalizeCode(rawCouponCode);
+        if (normalizedCode == null || clientEmail == null || clientEmail.isBlank()) {
+            return new CheckoutSummary(subtotal, 0.0, subtotal, null, null);
+        }
+
+        try {
+            CouponService.CouponValidationResult validation =
+                couponService.validateCoupon(normalizedCode, clientEmail, subtotal);
+            double discount = Math.min(validation.getDiscountAmount(), subtotal);
+            return new CheckoutSummary(subtotal, discount, Math.max(0.0, subtotal - discount), validation.getCoupon().getCode(), null);
+        } catch (IllegalArgumentException ex) {
+            return new CheckoutSummary(subtotal, 0.0, subtotal, normalizedCode, ex.getMessage());
         }
     }
 
@@ -132,5 +193,55 @@ public class TicketService {
             + seat.getSeatRow()
             + " seient "
             + seat.getSeatNumber();
+    }
+
+    public static class CheckoutSummary {
+        private final double subtotal;
+        private final double discountAmount;
+        private final double total;
+        private final String appliedCouponCode;
+        private final String couponMessage;
+
+        public CheckoutSummary(double subtotal, double discountAmount, double total, String appliedCouponCode, String couponMessage) {
+            this.subtotal = subtotal;
+            this.discountAmount = discountAmount;
+            this.total = total;
+            this.appliedCouponCode = appliedCouponCode;
+            this.couponMessage = couponMessage;
+        }
+
+        public double getSubtotal() {
+            return subtotal;
+        }
+
+        public double getDiscountAmount() {
+            return discountAmount;
+        }
+
+        public double getTotal() {
+            return total;
+        }
+
+        public String getAppliedCouponCode() {
+            return appliedCouponCode;
+        }
+
+        public String getCouponMessage() {
+            return couponMessage;
+        }
+
+        public boolean hasDiscount() {
+            return discountAmount > 0.0;
+        }
+
+        public boolean hasCouponMessage() {
+            return couponMessage != null && !couponMessage.isBlank();
+        }
+
+        public String getRewardDescription() {
+            return "A partir de " + String.format(Locale.US, "%.2f", CouponService.REWARD_THRESHOLD)
+                + " € regalem un cupó de " + String.format(Locale.US, "%.2f", CouponService.REWARD_DISCOUNT)
+                + " € per a la següent compra.";
+        }
     }
 }
