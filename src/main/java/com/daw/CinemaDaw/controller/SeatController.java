@@ -68,8 +68,7 @@ public class SeatController {
             seat.setRoom(room);
             seatRepository.save(seat);
 
-            
-            room.setCapacity(room.getSeats().size() + 1); 
+            room.setCapacity(roomRepository.countSeatsByRoomId(roomId));
             roomRepository.save(room);
 
             return "redirect:/room/" + roomId + "/seats";
@@ -123,7 +122,7 @@ public String deleteSeat(@PathVariable Long id) {
         Long roomId = room.getId();
         seatRepository.delete(seat);
 
-        room.setCapacity(room.getSeats().size() - 1);
+        room.setCapacity(roomRepository.countSeatsByRoomId(roomId));
         roomRepository.save(room);
 
         return "redirect:/room/" + roomId + "/seats";

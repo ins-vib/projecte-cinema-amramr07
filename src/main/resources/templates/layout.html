@@ -46,7 +46,7 @@
         </span>
 
         <!-- Cliente solo ve su apartado -->
-        <span sec:authorize="hasRole('CLIENT') ">
+        <span sec:authorize="hasRole('CLIENT') and !hasRole('ADMIN')">
             <a href="/client">Apartat Client</a>
         </span>
     </nav>
