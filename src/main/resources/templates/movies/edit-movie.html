@@ -23,7 +23,16 @@
 <br><br>
 
 <label>Gènere</label>
-<input type="text" th:field="*{genre}">
+<div>
+    <label th:each="genre : ${allGenres}" style="display:block; margin: 6px 0;">
+        <input type="checkbox"
+               name="genreIds"
+               th:value="${genre.id}"
+               th:checked="${selectedGenreIds.contains(genre.id)}">
+        <span th:text="${genre.name}"></span>
+    </label>
+</div>
+<p th:if="${#fields.hasErrors('genres')}" th:errors="*{genres}" style="color:red;"></p>
 <br><br>
 
 <label>Descripció</label>

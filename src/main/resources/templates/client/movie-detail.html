@@ -19,7 +19,7 @@
     </div>
 
     <div class="client-movie-detail-info">
-        <p><strong>Genre:</strong> <span th:text="${movie.genre}"></span></p>
+        <p><strong>Genres:</strong> <span th:text="${movie.genresText}"></span></p>
         <p><strong>Duration:</strong> <span th:text="${movie.duration}"></span> min</p>
         <p th:if="${movie.sinopsis != null and !#strings.isEmpty(movie.sinopsis)}">
             <strong>Synopsis:</strong> <span th:text="${movie.sinopsis}"></span>

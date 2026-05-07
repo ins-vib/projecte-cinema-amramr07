@@ -1,3 +1,16 @@
+INSERT INTO GENRE (NAME) VALUES
+('Acció'),
+('Aventura'),
+('Comèdia'),
+('Drama'),
+('Fantasia'),
+('Ciència-ficció'),
+('Thriller');
+
+INSERT INTO USERS (USERNAME, PASSWORD, ROLE) VALUES
+('adminexam', '$2a$10$jmklhqzbtUvZ1cJbjESo7.OLV6vX2IJsf10vEodvd5vEyC3oiYBgm', 'ADMIN'),
+('clientexam', '$2a$10$jmklhqzbtUvZ1cJbjESo7.OLV6vX2IJsf10vEodvd5vEyC3oiYBgm', 'CLIENT');
+
 INSERT INTO CINEMA (ADRESS, CITY, NAME, POSTAL_CODE) VALUES
 ('Major,15', 'Tarragona', 'Oscars' , 43100);
 
@@ -69,6 +82,18 @@ INSERT INTO MOVIE (TITLE, DURATION_MINUTES, GENRE, SINOPSIS, RELEASE_DATE) VALUE
 
 INSERT INTO MOVIE (TITLE, DURATION_MINUTES, GENRE, SINOPSIS, RELEASE_DATE) VALUES
 ('Spider-Man: Homecoming', 133, 'Action/Adventure', 'Peter Parker tries to balance high school life with being a superhero.', '2017-07-07');
+
+INSERT INTO MOVIE_GENRES (MOVIE_ID, GENRE_ID) VALUES
+(1, 1), (1, 6),
+(2, 1), (2, 6),
+(3, 1), (3, 6),
+(4, 1), (4, 5), (4, 2),
+(5, 1), (5, 2),
+(6, 1), (6, 2), (6, 6),
+(7, 1), (7, 2), (7, 6), (7, 3),
+(8, 1), (8, 2), (8, 6),
+(9, 1), (9, 5), (9, 2),
+(10, 1), (10, 2);
 
 
 

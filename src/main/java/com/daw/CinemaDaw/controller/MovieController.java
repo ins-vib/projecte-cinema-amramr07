@@ -1,7 +1,9 @@
 package com.daw.CinemaDaw.controller;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,8 +12,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.daw.CinemaDaw.domain.cinema.Genre;
 import com.daw.CinemaDaw.domain.cinema.Movie;
+import com.daw.CinemaDaw.repository.GenreRepository;
 import com.daw.CinemaDaw.repository.MovieRepository;
 import com.daw.CinemaDaw.repository.ScreeningRepository;
 
@@ -22,12 +27,15 @@ public class MovieController {
 
     private MovieRepository movieRepository;
     private ScreeningRepository screeningRepository;
+    private GenreRepository genreRepository;
 
   
 
-    public MovieController(MovieRepository movieRepository, ScreeningRepository screeningRepository) {
+    public MovieController(MovieRepository movieRepository, ScreeningRepository screeningRepository,
+            GenreRepository genreRepository) {
         this.movieRepository = movieRepository;
         this.screeningRepository = screeningRepository;
+        this.genreRepository = genreRepository;
     }
 
     @GetMapping("/movies")
@@ -40,13 +48,25 @@ public String movies(Model model) {
 @GetMapping("/movies/create")
 public String mostrarFormulariCrear(Model model) {
     model.addAttribute("movie", new Movie());
+    addGenreAttributes(model, Set.of());
     return "movies/create-movie";
 }
 
 @PostMapping("/movies/create")
 public String guardarMovie(@Valid @ModelAttribute Movie movie,
-                           BindingResult result) {
+                           BindingResult result,
+                           @RequestParam(name = "genreIds", required = false) List<Long> genreIds,
+                           Model model) {
+    Set<Genre> selectedGenres = loadSelectedGenres(genreIds);
+    movie.setGenres(selectedGenres);
+    movie.setGenre(movie.getGenresText());
+
+    if (selectedGenres.isEmpty()) {
+        result.rejectValue("genres", "movie.genres.required", "Has de seleccionar almenys un gènere.");
+    }
+
     if (result.hasErrors()) {
+        addGenreAttributes(model, selectedGenres);
         return "movies/create-movie";
     }
     movieRepository.save(movie);
@@ -61,7 +81,9 @@ public String guardarMovie(@Valid @ModelAttribute Movie movie,
     public String showEditForm(@PathVariable Long id, Model model) {
         Optional<Movie> optionalMovie = movieRepository.findById(id);
         if (optionalMovie.isPresent()) {
-            model.addAttribute("movie", optionalMovie.get());
+            Movie movie = optionalMovie.get();
+            model.addAttribute("movie", movie);
+            addGenreAttributes(model, movie.getGenres());
             return "movies/edit-movie";
         }
         return "redirect:/movies"; 
@@ -70,9 +92,19 @@ public String guardarMovie(@Valid @ModelAttribute Movie movie,
     // Update movie
    @PostMapping("/movies/edit")
 public String updateMovie(@Valid @ModelAttribute Movie movie,
-                          BindingResult result) {
+                          BindingResult result,
+                          @RequestParam(name = "genreIds", required = false) List<Long> genreIds,
+                          Model model) {
+    Set<Genre> selectedGenres = loadSelectedGenres(genreIds);
+    movie.setGenres(selectedGenres);
+    movie.setGenre(movie.getGenresText());
+
+    if (selectedGenres.isEmpty()) {
+        result.rejectValue("genres", "movie.genres.required", "Has de seleccionar almenys un gènere.");
+    }
 
     if(result.hasErrors()){
+        addGenreAttributes(model, selectedGenres);
         return "movies/edit-movie";
     }
 
@@ -107,5 +139,18 @@ public String deleteMovie(@PathVariable Long id) {
     }
     return "redirect:/movies";
 }
+
+private Set<Genre> loadSelectedGenres(List<Long> genreIds) {
+    if (genreIds == null || genreIds.isEmpty()) {
+        return Set.of();
+    }
+    return new HashSet<>(genreRepository.findAllById(genreIds));
 }
 
+private void addGenreAttributes(Model model, Set<Genre> selectedGenres) {
+    model.addAttribute("allGenres", genreRepository.findAll());
+    model.addAttribute("selectedGenreIds", selectedGenres.stream()
+            .map(Genre::getId)
+            .toList());
+}
+}

@@ -1,6 +1,9 @@
 package com.daw.CinemaDaw.domain.cinema;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -9,6 +12,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -33,10 +39,16 @@ private String title;
 @Column(name="duration_minutes", nullable=false)
 private Integer duration; // Cambié de int a Integer
 
-@NotBlank(message="The genre is obligatory")
-@Size(min=2, max=100, message="The genre has to have between 2 and 100 characters")
-@Column(length=100, nullable=false)
+@Column(length=100)
 private String genre;
+
+@ManyToMany
+@JoinTable(
+    name = "movie_genres",
+    joinColumns = @JoinColumn(name = "movie_id"),
+    inverseJoinColumns = @JoinColumn(name = "genre_id")
+)
+private Set<Genre> genres = new HashSet<>();
 
 @Column(columnDefinition="TEXT")
 private String sinopsis;
@@ -107,6 +119,24 @@ private LocalDate releaseDate;
 
     public void setGenre(String genre) {
         this.genre = genre;
+    }
+
+    public Set<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(Set<Genre> genres) {
+        this.genres = genres;
+    }
+
+    public String getGenresText() {
+        if (genres != null && !genres.isEmpty()) {
+            return genres.stream()
+                    .map(Genre::getName)
+                    .sorted()
+                    .collect(Collectors.joining(", "));
+        }
+        return genre;
     }
 
     public String getDescription() {
